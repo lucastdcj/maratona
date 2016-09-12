@@ -1,0 +1,42 @@
+\documentclass[landscape,a4paper]{article}
+
+\usepackage[pdftex,left=1cm,right=1cm,top=1.3cm,bottom=0.5cm]{geometry}
+\usepackage[portuges]{babel}
+\usepackage[utf8]{inputenc}
+%\usepackage{datetime}
+%\usepackage{beramono} % Descomente-me para usar uma fonte alternativa (se instalada)
+\usepackage{fancyhdr}
+\usepackage[T1]{fontenc}
+\usepackage{ae,aecompl}
+\usepackage{multicol}
+\usepackage{scalefnt}
+\usepackage{sectsty}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\allsectionsfont{\small}
+
+\pagestyle{fancy}
+
+\columnsep 0.2in
+\columnseprule 1.2pt
+\setlength\columnseprule{1.0px}
+
+\addtolength{\headheight}{\baselineskip}
+\setlength{\headsep}{0.3cm}
+\lhead{\footnotesize Univesity of Campinas - Institute of Computing}
+\rhead{\thepage}
+\lfoot{}
+\rfoot{}
+\cfoot{}
+
+\begin{document}
+%\setlength{\parindent}{0in}
+%\hfill \today \space \currenttime
+
+\begin{multicols}{3}
+\scalefont{.8}
+\tableofcontents
+\sffamily
+
+\normalsize
+\scalefont{.75}

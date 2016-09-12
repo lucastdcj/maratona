@@ -1,0 +1,9 @@
+Neste diretório está a arvore para o notebook da
+mundial (máximo atual de 25 páginas)
+
+O script remove o exemplo de uso e simplifica o
+cabeçalho para economizar espaço
+
+NOTA: Evite criar novos algoritmos ou duplicatas aqui,
+prefira colocar na árvore principal e fazer um link
+simbólico nessa subárvore para facilitar a manutenção

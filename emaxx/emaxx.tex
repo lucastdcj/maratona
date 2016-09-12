@@ -1,0 +1,69 @@
+% \documentclass[a4paper,landscape]{book}
+\documentclass[a4paper]{book}
+\usepackage{multicol}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{ae,aecompl}
+\usepackage{scalefnt}
+\usepackage{parskip}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage[a4paper]{geometry}
+% \geometry{tmargin=1.5cm,bmargin=1cm,lmargin=1cm,rmargin=1cm}
+\geometry{tmargin=1.5cm,bmargin=2cm,lmargin=1.5cm,rmargin=1.5cm}
+\usepackage{fixltx2e} % provides \textsubscript
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8x]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={MAXimal},
+            colorlinks=true,
+            urlcolor=blue,
+            linkcolor=black,
+            pdfborder={0 0 0}}
+\setlength{\parindent}{0pt}
+% \setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+% \setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{1}
+\makeatletter
+\g@addto@macro\@verbatim\footnotesize
+\makeatother
+\usepackage{import}
+
+\columnsep 0.2in
+\columnseprule 1.2pt
+\setlength\columnseprule{1.0px}
+
+\title{MAXimal}
+\makeindex
+
+\begin{document}
+% \begin{multicols}{2}
+% \scalefont{.85}
+\tableofcontents
+\subimport{graph/}{graph.tex}
+\subimport{string/}{string.tex}
+\subimport{geom/}{geom.tex}
+\subimport{algebra/}{algebra.tex}
+\subimport{misc/}{misc.tex}
+% \end{multicols}
+\end{document}

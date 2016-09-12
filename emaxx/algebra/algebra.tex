@@ -1,0 +1,2764 @@
+\chapter{Algebra}
+
+\section{ Euler Phi function }
+\subsection{ Definition }
+
+\textbf{Euler function} $\phi (n)$ (Sometimes referred to $\varphi (n)$ or ${\it phi} (n)$)- Is the amount of numbers from $1$ to $n$ Prime to $n$. In other words, the number of numbers in the interval $[1; n]$, the greatest common divisor of which with $n$ equal to one.
+
+The first few values ​​of this function(A000010 in OEIS encyclopedia ):
+
+$\phi (1) = 1,$
+$\phi (2) = 1,$
+$\phi (3) = 2,$
+$\phi (4) = 2,$
+$\phi (5) = 4.$
+
+\subsection{ Properties }
+
+Following three simple properties of the Euler - enough to learn how to calculate it for any of:
+
+If $p$ - Prime, $\phi (p) = p-1$.
+(This is obvious, because any number except the $p$ Prime to it.)
+
+If $p$ - A simple, $a$ - A natural number, $\phi (p ^ a) = p ^ a-p ^ {a-1}$.
+(Because the number of $p ^ a$ not only are prime numbers of the form $pk$$(K \in \mathcal {N})$ Which $p ^ a / p = p ^ {a-1}$ pcs.)
+
+If $a$ and $b$ coprime, then $\phi (ab) = \phi (a) \phi (b)$ ("Multiplicative" Euler function).
+(This follows from the Chinese remainder theorem. Consider an arbitrary number $z \le ab$. We denote $x$ and $y$ residues modulo $z$ on $a$ and $b$ respectively. Then $z$ coprime $ab$ if and only if $z$ coprime $a$ and $b$ individually, or, equivalently, $x$ coprime $a$ and $y$ coprime $b$. Applying the Chinese remainder theorem, we see that each pair of numbers $x$ and $y$$(X \le a, ~ y \le b)$ corresponds to the number-one $z$$(Z \le ab)$ This completes the proof.)
+
+From here you can get the Euler function for any $\it n$ through its \textbf{factorization} (decomposition $n$ into prime factors):
+
+if
+
+$n=p_{1}^{a_{1}}\cdot p_{2}^{a_{2}}\cdot\ldots\cdot p_{k}^{a_{k}}$
+
+(Where all the $p_i$ - Common), then
+
+$\phi(n)=\phi(p_{1}^{a_{1}})\cdot\phi(p_{2}^{a_{2}})\cdot\ldots\cdot\phi(p_{k}^{a_{k}})=$
+
+$=(p_{1}^{a_{1}}-p_{1}^{a_{1}-1})\cdot(p_{2}^{a_{2}}-p_{2}^{a_{2}-1})\cdot\ldots\cdot(p_{k}^{a_{k}}-p_{k}^{a_{k}-1})=$
+
+$=n\cdot(1-\frac{1}{p_{1}})\cdot(1-\frac{1}{p_{2}})\cdot\ldots\cdot(1-\frac{1}{p_{k}})$
+
+\subsection{ Implementation }
+
+Simplest code that computes the Euler function, factoring the number of elementary method $O (\sqrt n)$ :
+
+\begin{verbatim}
+int phi(int n){
+    int result = n ;
+    for(int i = 2 ; i * i <= n ; ++ i )
+        if(n % i == 0){
+            while(n % i == 0 )
+                n / = i ;
+            result - = result / i ;
+        }
+    if(n > 1 )
+        result - = result / n ;
+    return result ;
+} 
+\end{verbatim}
+The key place for the calculation of the Euler function - is to find a \textbf{factorization} of $n$. It can be done in a time much less $O (\sqrt {n})$ : See Effective factorization algorithms.
+
+\subsection{ Application of the Euler function }
+
+The most famous and important property of the Euler expressed in \textbf{Euler's theorem:}
+
+$a ^ {\phi (m)} \equiv 1 \pmod m,$
+
+where $\it a$ and $\it m$ coprime.
+In the special case where $\it m$ simple Euler's theorem turns into the so-called \textbf{Fermat's little theorem:}
+
+$a ^ {m-1} \equiv 1 \pmod m$
+
+Euler's theorem often occurs in practical applications, for example, see the inverse element in the mod.
+
+\subsection{ Tasks in the online judges }
+
+List of tasks that need to calculate the Euler function, or use Euler's theorem, or by the value of the Euler function to restore the original number:
+
+UVA 10179 \textbf{"Irreducible Basic Fractions"} [Difficulty: Easy]
+
+UVA 10299 \textbf{"Relatives"} [Difficulty: Easy]
+
+UVA 11327 \textbf{"Enumerating Rational Numbers"} [Difficulty: Medium]
+
+TIMUS 1673 \textbf{"tolerance for the exam"} [Difficulty: Hard]
+
+\section{ Binary exponentiation }
+Binary (binary) exponentiation - is a trick to build any number $n$ -Th power of $O (\log n)$ multiplications (instead $n$ multiplications in the usual approach).
+
+Moreover, the technique described here is applicable to any \textbf{associative} operation, not only to the multiplication of numbers. Recall operation is called associative if for any $a, b, c$ performed:
+
+$(A \cdot b) \cdot c = a \cdot (b \cdot c)$
+
+The most obvious generalization - the remains of some modulo (obviously, the associativity is preserved). Next on the "popularity" is a generalization to the matrix product (its associativity is well known).
+
+\subsection{ Algorithm }
+
+Note that for any number $a$ and an \textbf{even} number $n$ feasible obvious identity (which follows from the associativity of multiplication):
+
+$a ^ n = (a ^ {n / 2}) ^ 2 = a ^ {n / 2} \cdot a ^ {n / 2}$
+
+It is the main method in the binary exponentiation. Indeed, for even $n$ we have shown how, having spent only one multiplication, we can reduce the problem to a half as much.
+It remains to understand what to do, if the degree $n$ \textbf{odd.} Here we do is very simple: go to the extent of $n-1$, Which will have even:
+
+$a ^ n = a ^ {n-1} \cdot a$
+
+So, we actually found a recursive formula: the degree of $n$ we move, if it is even to $n / 2$ And otherwise - to $n-1$. It is clear that there will be no more $2 \log n$ transitions, before we come to $n = 0$ (Based on recursive formula). Thus, we have an algorithm that works for $O (\log n)$ multiplications.
+
+\subsection{ Implementation }
+
+A simple recursive implementation:
+
+\begin{verbatim}
+int binpow(int a, int n){
+    if(n == 0 )
+        return 1 ;
+    if(n % 2 == 1 )
+        return binpow(a, n - 1)* a ;
+    else {
+        int b = binpow(a, n / 2);
+        return b * b ;
+    }
+} 
+\end{verbatim}
+Non-recursive implementation, and optimized (division by 2 replaced bit operations):
+
+\begin{verbatim}
+int binpow(int a, int n){
+    int res = 1 ;
+    while(n )
+        if(n & 1){
+            res * = a ;
+            -- n ;
+        }
+        else {
+            a * = a ;
+            n >>= 1 ;
+        }
+    return res ;
+} 
+\end{verbatim}
+This implementation could be simplified somewhat by noting that the construction of $a$ the square is always, no matter the condition worked odd $n$ or not:
+
+\begin{verbatim}
+int binpow(int a, int n){
+    int res = 1 ;
+    while(n){
+        if(n & 1 )
+            res * = a ;
+        a * = a ;
+        n >>= 1 ;
+    }
+    return res ;
+} 
+\end{verbatim}
+Finally, note that the binary exponentiation is implemented in Java, but only for a class of long arithmetic BigInteger (pow function of this class is working on the construction of the binary algorithm).
+
+\subsection{ Examples of solving problems }
+
+\subsubsection{ Efficient evaluation of the Fibonacci numbers }
+
+\textbf{Condition.} Given the number $n$. To be calculated $F_n$ Where $F_i$ - Fibonacci sequence.
+
+\textbf{Decision.} More details are described in the decision paper on the Fibonacci sequence. Here we briefly present the essence of the decision.
+
+The basic idea is as follows. Computation of the next Fibonacci number is based on the knowledge of the previous two Fibonacci numbers, that is, each successive Fibonacci number is the sum of the previous two. This means that we can build a matrix $2 \times 2$ Which will correspond to this transformation: how the two Fibonacci numbers $F_i$ and $F_ {i +1}$ calculate the next number, i.e. go to a pair of $F_ {i +1}$, $F_ {i +2}$. For example, applying this transformation $n$ time to a pair of $F_0$ and $F_1$, We obtain a pair $F_n$ and $F_ {n +1}$. Thus elevating the matrix of this transformation $n$ -Th power, we thus find the desired $F_n$ during $O (\log n)$ That we required.
+
+\subsubsection{ Permutation exponentiation }
+
+\textbf{Condition.} Given permutation $p$ length $n$. Raise it to the required $k$ -Th power, i.e. find out, if the identity permutation $k$ time to apply the permutation $p$.
+
+\textbf{Decision.} Just apply to the permutation $p$ above algorithm binary exponentiation. No differences compared to the construction of the power of numbers - no. The solution is obtained with the asymptotic $O (n \log k)$.
+
+(Note: This problem can be solved more efficiently, \textbf{in linear time.} Just select all the cycles in the permutation, and then consider separately each cycle, and taking $k$ modulo the length of the current cycle, the answer to this cycle.)
+
+\subsubsection{ Efficient application of geometric operations to points }
+
+\textbf{Condition.} Dana $n$ points $p_i$, And given $m$ transformations that must be applied to each of these points. Each transformation - either shift to a given vector, or scaling (multiplication coordinate given coefficients), or rotation about a given axis at a given angle. In addition, there is a composite operation is cyclic repetition: it looks like "a specified number of times to repeat the specified list of change" (cyclic repetition of the operation can be nested).
+
+Required is the result of applying these operations to all points (effectively, i.e. for a time shorter than $O (n \cdot length)$ Where $length$ - The total number of transactions that need to be done).
+
+\textbf{Decision.} Look at the different types of changes in terms of how they change location:
+
+Shift operation - it just adds to all the coordinates of the unit, multiplied by a constant.
+Scale operation - it multiplies each coordinate by a constant.
+Operation around the axis of rotation - it can be represented as follows: received new coordinates can be written as a linear combination of the old ones.
+(Here we do not specify how this is done. Example, you can submit it for simplicity as a combination of five-dimensional rotations: first planes $OXY$ and $OXZ$ so that the axis of rotation coincides with the positive direction of the $OX$, Then the desired rotation around an axis in the plane $YZ$ Then reverse rotation in the plane $OXZ$ and $OXY$ so that the axis of rotation back to its original position.)
+
+Easy to see that each of these changes - this recalculation of coordinates on linear formulas. Thus, any such transformation can be written in matrix form $4 \times 4$ :
+
+$\left(\begin{array}{cccc}
+a_{11} & a_{12} & a_{13} & a_{14}\\
+a_{21} & a_{22} & a_{23} & a_{24}\\
+a_{31} & a_{32} & a_{33} & a_{34}\\
+a_{41} & a_{42} & a_{43} & a_{44}
+\end{array}\right)$
+
+which when multiplied (left) to the line of the old coordinates and the unit provides a constant string of new coordinates and constant units:
+
+$\left(\begin{array}{cccc}
+x & y & z & 1\end{array}\right)\cdot\left(\begin{array}{cccc}
+a_{11} & a_{12} & a_{13} & a_{14}\\
+a_{21} & a_{22} & a_{23} & a_{24}\\
+a_{31} & a_{32} & a_{33} & a_{34}\\
+a_{41} & a_{42} & a_{43} & a_{44}
+\end{array}\right)=\left(\begin{array}{cccc}
+x' & y' & z' & 1\end{array}\right)$
+
+(Why the need to introduce a fictitious fourth coordinate is always equal to one? Without this we would have to implement the shift operation: after the shift - it is just an addition to the coordinates of the unit, multiplied by a coefficient. Without dummy units we could only implement linear combinations of the coordinates themselves, and add to them given constants - could not.)
+
+Now the solution of the problem becomes almost trivial. Once each unit operation is described by the matrix, the sequence of operations described the product of these matrices, and the operation of the cyclic repetition - the erection of this matrix to a power. Thus, we are for the time $O (m \cdot \log repetition)$ matrix can predposchitat $4 \times 4$ That describes all the changes, and then simply multiply each point $p_i$ on this matrix - thus, we will respond to all requests for time $O (n)$.
+
+\subsubsection{ The number of paths of given length }
+
+\textbf{Condition.} Given an undirected graph $G$ with $n$ vertices, and given the number of $k$. Required for each pair of vertices $i$ and $j$ find the number of paths between them, with exactly $k$ edges.
+
+\textbf{Decision.} More information on this problem is considered in a separate article. Here we only recall the essence of the decision: we simply erecting a $k$ -Th power of the adjacency matrix of the graph, and the elements of the matrix and will be the solutions. Final asymptotics - $O (n ^ 3 \log k)$.
+
+(Note: In the same article, and the other is considered a variation of this problem: when the weighted graph, and you want to find the path of minimum weight, containing exactly $k$ edges. As shown in this paper, this problem is also solved using binary exponentiation adjacency matrix, but instead of the normal operation of multiplying two matrices, use a modified: instead of multiplying the amount taken, and instead of adding - taking a minimum.)
+
+\subsubsection{ Variation of the binary exponentiation: multiplying two integers modulo }
+
+We present here an interesting variation on the binary exponentiation.
+
+Suppose we are faced with a \textbf{challenge:} to multiply two numbers $a$ and $b$ modulo $m$ :
+
+$a \cdot b \pmod m$
+
+Assume that the numbers can be quite large: so that the numbers themselves are placed in a built-in types, but their direct product $a \cdot b$ - No longer exists (note that we also need to sum the numbers are placed in a built-in data type). Accordingly, the task is to find the unknown quantity $(A \cdot b) \pmod m$, Without the need for long arithmetic.
+
+\textbf{The solution is this.} We simply apply the binary exponentiation algorithm, as described above, but instead of multiplication we will make the addition. In other words, the multiplication of two numbers, we have reduced the $O (\log m)$ addition and multiplication by two (which is also, in fact, there is addition).
+
+(Note: This problem can be solved \textbf{in a different way,} with the help of operations with floating-point numbers. Specifically, count to a floating-point expression $a \cdot b / m$ And round it to the nearest integer. So we find \textbf{an approximate} quotient. Take it away from the product $a \cdot b$ (Ignoring overflow), we are likely to get a relatively small number, which can be taken modulo $m$ - And return it as a response. This solution is rather unreliable, but it is very fast, and very briefly sold.)
+
+\subsection{ Tasks in the online judges }
+
+List of tasks that can be solved using binary exponentiation:
+
+SGU 265 \textbf{"Wizards"} [Difficulty: Medium]
+\section{ Euclidean algorithm to find the GCD }
+Given two non-negative integers $a$ and $b$. Required to find the greatest common divisor, i.e. the largest number that divides both $a$ And $b$. In English "greatest common divisor" is spelled "greatest common divisor", and its symbol is a common ${\rm gcd}$ :
+
+$\gcd(a,b)=\max_{k=1\cdots\infty:k|a\wedge k|b}k$
+
+(Where the symbol " $|$ "Denotes the divisibility, i.e." $k | a$ "Denotes" $k$ divides $a$ ")
+When it is of the numbers is zero, and the other is non-zero, their greatest common divisor, by definition, it will be the second number. When both are zero, the result is not defined (fits any infinite number), we put in this case the greatest common divisor is zero. Therefore, one can speak of such a rule: if one of the numbers is zero, the greatest common divisor is the second number.
+
+\textbf{Euclidean algorithm,} discussed below, solves the problem of finding the greatest common divisor of two numbers $a$ and $b$ for $O (\log \min (a, b))$.
+
+This algorithm was first described in the book of Euclid's "The Beginning" (about 300 BC), although it is possible, this algorithm has an earlier origin.
+
+\subsection{ Algorithm }
+
+The algorithm itself is very simple and is described by the following formula:
+
+$\gcd(a,b)=\begin{cases}
+a & {\rm if\,}b=0\\
+\gcd(b,a\mod b) & {\rm otherwise}
+\end{cases}$
+
+\subsection{ Implementation }
+
+\begin{verbatim}
+int gcd(int a, int b){
+    if(b == 0 )
+        return a ;
+    else
+        return gcd(b, a % b);
+} 
+\end{verbatim}
+Using the ternary conditional operator C++, the algorithm can be written even shorter:
+
+\begin{verbatim}
+int gcd(int a, int b){
+    return b ? gcd(b, a % b): a ;
+} 
+\end{verbatim}
+Finally, we present an algorithm and a non-recursive form:
+
+\begin{verbatim}
+int gcd(int a, int b){
+    while(b){
+        a % = b ;
+        swap(a, b);
+    }
+    return a ;
+} 
+\end{verbatim}
+\subsection{ Proof of correctness }
+
+First note that with each iteration of the Euclidean algorithm to the second argument is strictly decreasing, and consequently, since it is non-negative, then the Euclidean algorithm \textbf{always terminates.}
+
+For the \textbf{proof} we need to show that ${\rm gcd} (a, b) = {\rm gcd} (b, a {\rm mod} b)$ for any $a \ge 0, b> 0$.
+
+We show that the quantity in the left-hand side is divided by this in the right, and the right-hand - is divided into the left-hand. Obviously, this would mean that the two sides of the same, and that proves the correctness of Euclid's algorithm.
+
+Denote $d = {\rm gcd} (a, b)$. Then, by definition, $d | a$ and $d | b$.
+
+Next, we expand the remainder of the division $a$ on $b$ through their quotient:
+
+$a\mod b=a-b\left\lfloor \frac{a}{b}\right\rfloor$
+
+But then it follows:
+
+$d \| (a {\rm { mod }} b)$
+
+So, remembering the statement $d | b$ We obtain the system:
+
+$\begin{cases}
+d|b\\
+d|(a\mod b)
+\end{cases}$
+
+Now we use the following simple fact: If any three numbers $p, q, r$ complete $p | q$ and $p | r$, It holds: $p | {\rm gcd} (q, r)$. In our situation, we get:
+
+$d | {\rm gcd} (b, a {\rm { mod }} b)$
+
+Or by substituting $d$ its definition as ${\rm gcd} (a, b)$, We get:
+${\rm gcd} (a, b) | {\rm gcd} (b, a {\rm { mod }} b)$
+
+So, we spent half of the proof: to show that the left-right divide. The second half of the proof is similar.
+
+\subsection{ Operation time }
+
+The running time is estimated \textbf{theorem Lama,} which establishes a surprising connection of the Euclidean algorithm, and the Fibonacci sequence:
+
+If $a> b \ge 1$ and $b <F_n$ for some $n$, The Euclidean algorithm performs no more $n-2$ recursive calls.
+
+Moreover, it can be shown that the upper bound of this theorem - optimal. At $a = F_n, b = F_ {n-1}$ will do it $n-2$ recursive call. In other words, \textbf{successive Fibonacci numbers - the worst input} to the Euclidean algorithm.
+
+Given that the Fibonacci numbers grow exponentially (as a constant in the degree of $n$ ), We find that the Euclidean algorithm runs in $O (\log \min (a, b))$ multiplications.
+
+\subsection{ LCM (least common multiple) }
+
+Computation of the least common multiple (least common multiplier, lcm) reduces to the calculation $\rm gcd$ the following simple statement:
+
+${\rm lcm}(a,b)=\frac{a\cdot b}{\gcd(a,b)}$
+
+Thus, the calculation NOC can also be done using the Euclidean algorithm, the same asymptotics
+
+\begin{verbatim}
+int lcm(int a, int b){
+    return a / gcd(a, b)* b ;
+} 
+\end{verbatim}
+(Here the first profitable divided by $\rm gcd$ And only then multiplied by $b$ As this will help avoid overflows in some cases)
+
+\subsection{ Literature }
+
+Thomas Cormen, Charles Leiserson, Ronald Rivest, Clifford Stein. \textbf{Algorithms: Design and Analysis} [2005]
+\section{ Sieve of Eratosthenes }
+Sieve of Eratosthenes - an algorithm for finding all the prime numbers in the interval $[1; n]$ for $O (n \log \log n)$ operations.
+
+The idea is simple - to write a series of numbers $1 \ldots n$ And will strike out first all the numbers divisible by $2$ Except the number of $2$ And then dividing by $3$ Except the number of $3$, Then $5$, Then $7$, $11$, And all other simple to $n$.
+
+\subsection{ Implementation }
+
+Immediately shows the implementation of the algorithm:
+
+\begin{verbatim}
+int n ;
+vector < char > prime(n + 1, true);
+prime[0]= prime[1]= false ;
+for(int i = 2 ; i <= n ; ++ i )
+    if(prime[i])
+        if(i * 1ll * i <= n )
+            for(int j = i * i ; j <= n ; j + = i )
+                prime[j]= false ; 
+\end{verbatim}
+This code first checks all numbers except zero and one, as simple, and then begins the process of sifting composite numbers. For this, we looped all the numbers from $2$ to $n$ And, if the current number $i$ prime, then mark all multiples of him as a composite.
+
+At the same time we are beginning to go from $i ^ 2$ As fewer multiples $i$, Be sure to have a prime factor less $i$ And, therefore, they have been eliminated earlier. (But since $i ^ 2$ can easily overwhelm type $int$ In the code before the second nested loop is an additional check using the type $long ~ long$.)
+
+This implementation uses an algorithm $O (n)$ memory (obviously), and performs $O (n \log \log n)$ actions (this is shown in the next section).
+
+\subsection{ Asymptotics }
+
+We prove that the asymptotic behavior of the algorithm is $O (n \log \log n)$.
+
+So, for every prime $p \le n$ will run the inner loop, which will make $\frac {n} {p}$ action. Therefore, we need to estimate the following value:
+
+$$\sum_{p\leq n,p{\rm \, is\, prime}}\frac{n}{p}=n\cdot\sum_{p\leq n,p{\rm \, is\, prime}}\frac{1}{p}$$
+
+Let's remember there are two known facts: that the number of primes less than or equal $n$, Is approximately equal $\frac {n} {\ln n}$ And that $k$ Th prime number is approximately equal to $k \ln k$ (This follows from the first statement). Then the sum can be written as follows:
+
+$$\sum_{p\leq n,p{\rm \, is\, prime}}\frac{1}{p}\approx\frac{1}{2}+\sum_{k=2}^{\frac{n}{\ln n}}\frac{1}{k\ln k}$$
+
+Here, we have identified the first prime of the sum, since the $k = 1$ according to the approximation $k \ln k$ will $0$ That will lead to division by zero.
+
+We now estimate a sum by an integral of the same function on $k$ from $2$ to $\frac {n} {\ln n}$ (We can make an approximation, since, in fact, refers to the sum of the integral as his approach to the rectangle formula):
+
+$$\sum_{k=2}^{\frac{n}{\ln n}}\frac{1}{k\ln k}\approx\int_{2}^{\frac{n}{\ln n}}\frac{1}{k\ln k}dk$$
+
+Primitive of the integrand is $\ln \ln k$. To substitute and removing members of lower order, we get:
+
+$$\int_{2}^{\frac{n}{\ln n}}\frac{1}{k\ln k}dk=\ln\ln\frac{n}{\ln n}-\ln\ln2=\ln(\ln n-\ln\ln n)-\ln\ln2\approx\ln\ln n$$
+
+Now, getting back to the original amount, we obtain its approximate estimate:
+
+$$\sum_{p\leq n,p{\rm \, is\, prime}}\frac{n}{p}\approx n\ln\ln n+o(n)$$
+
+as required.
+
+More rigorous proof (and gives a more accurate estimate, up to constant factors) can be found in Hardy and Wright "An Introduction to the Theory of Numbers" (p. 349).
+
+\subsection{ Various optimizations of the sieve of Eratosthenes }
+
+The biggest drawback of the algorithm - that he "walks" from memory, always going beyond the cache, causing the constant hidden in $O (n \log \log n)$ Is relatively large.
+
+In addition, for sufficiently large $n$ bottleneck on the amount of memory consumption.
+
+The following are the methods to both reduce the number of operations performed, as well as significantly reduce the memory consumption.
+
+\subsubsection{ Simple screening to the root }
+
+The most obvious point - that in order to find all simple to $n$ Of just a simple screening only, not exceeding the square root of $n$.
+
+This will change the outer loop of the algorithm:
+
+\begin{verbatim}
+for(int i = 2 ; i * i <= n ; ++ i)
+\end{verbatim}
+The asymptotic this optimization does not affect (indeed, repeating the above proof, we obtain the estimate $n \ln \ln \sqrt {n} + o (n)$ That, by the properties of the logarithm, is asymptotically the same), although the number of transactions has declined.
+
+\subsubsection{ Sieve using only odd numbers }
+
+Since all the even numbers, except $2$ - Component, it can not handle all the even numbers in any way, and to operate only odd numbers.
+
+First, it will reduce by half the amount of memory required. Second, it makes the algorithm reduces the number of operations by about half.
+
+\subsubsection{ Reducing the amount of memory consumed }
+
+Note that Eratosthenes algorithm actually operates on $n$ bits of memory. Therefore, you can save significant memory consumption, for at $n$ byte - booleans, and $n$ bits, i.e. $n / 8$ bytes of memory.
+
+However, this approach - \textbf{"bit compression"} - significantly complicate handling these bits. Any read or write bits will be of a more arithmetic operations, which will eventually lead to a slowdown of the algorithm.
+
+Thus, this approach is valid only if $n$ so much so that $n$ bytes of memory to allocate anymore. Saving memory (in $8$ time), we will pay for this is a significant slowdown of the algorithm.
+
+Finally, it is worth noting that in the language C++ containers have already been implemented, automatically does bit compression: vector <bool> and bitset <>. However, if speed is important, it is best to implement the compression bit by hand, using bit operations - today compilers are still not able to generate enough fast code.
+
+\subsubsection{ Block sieve }
+
+Optimization of "simple screening to the root" implies that there is no need to store all the time the whole array $prime [1 \ldots n]$. To perform screening is sufficient to store only common to the root of $n$ i.e. $prime [1 \ldots \sqrt {n}]$ And the remainder of the array $prime$ building block at a time, keeping the current time only one block.
+
+Let $s$ - Constant that determines the size of the block, then all will be $\left \lceil \frac {n} {s} \right \rceil$ blocks, $k$ First block($k = 0 \ldots \left \lfloor \frac {n} {s} \right \rfloor$)Contains a number in the interval $[Ks; ks + s-1]$. Will process blocks at a time, i.e. for each $k$ On the block will go through all the simple (from $1$ to $\sqrt {n}$)And perform their screening only within the current block. Carefully handle is the first unit - first, from the simple $[1; \sqrt {n}]$ should not remove themselves, and second, the number of $0$ and $1$ should be particularly marked as not simple. When processing the last block should also not forget that the last required number $n$ not necessarily at the end of the block.
+
+We present the implementation of block sieve. The program reads the number $n$ and finds a number of simple $1$ to $n$ :
+
+\begin{verbatim}
+const int SQRT_MAXN = 100000 ; // root of the maximum value of N
+const int S = 10000 ;
+bool nprime[SQRT_MAXN], bl[S];
+int primes[SQRT_MAXN], cnt ;
+ 
+int main() {
+ 
+    int n ;
+    cin >> n ;
+    int nsqrt =(int)sqrt(n +.0);
+    for(int i = 2 ; i <= nsqrt ; ++ i )
+        if(! nprime[i ]){
+            primes[cnt ++]= i ;
+            if(i * 1ll * i <= nsqrt )
+                for(int j = i * i ; j <= nsqrt ; j + = i )
+                    nprime[j]= true ;
+        }
+ 
+    int result = 0 ;
+    for(int k = 0, maxk = n / S ; k <= maxk ; ++ k){
+        memset(bl, 0, sizeof bl);
+        int start = k * S ;
+        for(int i = 0 ; i < cnt ; ++ i){
+            int start_idx =(start + primes[i]- 1)/ primes[i];
+            int j = max(start_idx, 2)* primes[i]- start ;
+            for(; j < S ; j + = primes[i])
+                bl[j]= true ;
+        }
+        if(k == 0 )
+            bl[0]= bl[1]= true ;
+        for(int i = 0 ; i < S && start + i <= n ; ++ i )
+            if(! bl[i])
+                ++ result ;
+    }
+    cout << result ;
+ 
+}
+\end{verbatim}
+
+Asymptotics sieve block is the same as the conventional sieve of Eratosthenes (unless, of course, the size of $s$ units will not be very small), but the amount of memory will be reduced to $O (\sqrt {n} + s)$ and reduce "walk" from memory. But, on the other hand, for each block, for each prime of $[1; \sqrt {n}]$ will run the division, which will greatly affect in a smaller unit. Consequently, the choice of the constants $s$ need to strike a balance.
+
+Experiments show that the best performance is achieved when $s$ has a value of about $10 ^ 4$ to $10 ^ 5$.
+
+\subsubsection{ Upgrade to linear time }
+
+Eratosthenes algorithm can be converted to a different algorithm, which is already operational in linear time - see the article "Sieve of Eratosthenes with linear time work". (However, this algorithm has some limitations.)
+
+\section{ Extended Euclidean algorithm }
+While the "normal" Euclidean algorithm simply finds the greatest common divisor of two numbers $a$ and $b$, The extended Euclidean algorithm finds the GCD as factors other than $x$ and $y$ such that:
+
+$a \cdot x + b \cdot y = {\rm gcd} (a, b).$
+
+i.e. he finds the coefficients with which the GCD of two numbers expressed in terms of the numbers themselves.
+
+\subsection{ Algorithm }
+
+Make the calculation of these coefficients in the Euclidean algorithm is easy enough to deduce the formula by which they change from a pair $(a, b)$ to a pair of $(b \% a, a)$ (Percent sign denotes taking the remainder of the division).
+
+Thus, suppose that we have found a solution $(x_1, y_1)$ problems for the new couple $(b \% a, a)$ :
+
+$(b \% a) \cdot x_1 + a \cdot y_1 = g,$
+
+and want to get a solution $(x, y)$ for our couples $(a, b)$ :
+
+$a \cdot x + b \cdot y = g.$
+
+To do this, we transform the value $b \% a$ :
+
+$b\%a=b-\lfloor\frac{b}{a}\rfloor a$
+
+We substitute this into the above expression $x_1$ and $y_1$ and obtain:
+
+$g=(b\%a)x_{1}+ay_{1}=\left(b-\lfloor\frac{b}{a}\rfloor a\right)x_{1}+ay_{1}$
+
+and, carrying regrouping terms, we obtain:
+
+$g=bx_{1}+a\left(y_{1}-\lfloor\frac{b}{a}\rfloor x_{1}\right)$
+
+Comparing this with the original expression of the unknown $x$ and $y$, We obtain the desired expression:
+
+$\begin{cases}
+x=y_{1}-\lfloor\frac{b}{a}\rfloor x_{1}\\
+y=x_{1}
+\end{cases}
+ $
+
+\subsection{ Implementation }
+
+\begin{verbatim}
+
+int gcd(int a, int b, int & x, int & y){
+    if(a == 0){
+        x = 0 ; y = 1 ;
+        return b ;
+    }
+    int x1, y1 ;
+    int d = gcd(b % a, a, x1, y1);
+    x = y1 -(b / a)* x1 ;
+    y = x1 ;
+    return d ;
+} 
+\end{verbatim}
+This is a recursive function, which still returns the GCD of the numbers $a$ and $b$, But beyond that - as desired coefficients $x$ and $y$ as function parameters passed by reference.
+
+Recursion base - case $a = 0$. Then the GCD is $b$ And, obviously, the required coefficients $x$ and $y$ equal $0$ and $1$ respectively. In other cases, the usual solution is working, and the coefficients are converted to the above formulas.
+
+Extended Euclidean algorithm in this implementation works correctly even for negative numbers.
+
+\subsection{ Literature }
+
+Thomas Cormen, Charles Leiserson, Ronald Rivest, Clifford Stein. \textbf{Algorithms: Design and Analysis} [2005]
+\section{ Fibonacci numbers }
+\subsection{ Definition }
+
+The Fibonacci sequence is defined as follows:
+
+$F_0 = 0,$
+$F_1 = 1,$
+$F_n = F_ {n-1} + F_ {n-2}.$
+
+The first few of its members:
+
+0, 1, 1, 2, 3, 5, 8, 13, 21, 34...
+
+\subsection{ Story }
+
+These numbers are introduced in 1202 by Leonardo Fibonacci (Leonardo Fibonacci) (also known as Leonardo of Pisa (Leonardo Pisano)). However, thanks to the 19th century mathematician Luca (Lucas) called "Fibonacci numbers" became common.
+
+However, the number of Indian mathematicians mentioned earlier in this sequence: Gopal (Gopala) until 1135, Hemachandra (Hemachandra) - in 1150
+
+\subsection{ Fibonacci numbers in nature }
+
+Fibonacci himself referred to these numbers due to the following problem: "A man planted a couple of rabbits in the paddock, surrounded on all sides by a wall. How many pairs of rabbits per year may produce this pair, if you know that every month, starting with the second, each pair rabbits gives birth to a pair? ". The solution to this problem and will be the number of sequences, now called after him. However, the situation described by the Fibonacci - more mind game than real nature.
+
+Indian mathematicians Gopala and Hemachandra mention of this sequence at the number of rhythmic patterns produced by alternating long and short syllables in verse or strong and weak interest in music. The number of these drawings have a whole $n$ shares, as well $F_n$.
+
+Fibonacci numbers appear in the work of Kepler in 1611, which reflected on the numbers found in nature (the work "On the hexagonal flakes").
+
+An interesting example is plants - yarrow, in which the number of stems (which means flower) is always a Fibonacci number. The reason is simple: being originally a single stem, the stem is then divided by two, then branches off from the main stem is another, then the first two stems branch out again, then all of the stems, but the last two, branch, and so on. Thus, each stalk after his appearance "skips" one branch, and then begins to divide at each level of branches, which results in a Fibonacci number.
+
+Generally speaking, many colors (such as lilies) is the number of petals in some Fibonacci number.
+
+Well known phenomenon in botany'''' phyllotaxis. As an example, the location of sunflower seeds: If you look down on the location, you will see two simultaneous series of spirals (like overlapping): some are twisted clockwise, the other - against. It turns out that the number of these spirals is roughly equal to two consecutive Fibonacci numbers: 34 and 55 or 89 and 144. Similar facts are true for some of the other colors, as well as pine cones, broccoli, pineapple, etc.
+
+For many plants (some for 90\% of them) are true and an interesting fact. Consider any list, and will go down to the bottom of it until we reach the leaf, which is located on the stem in the same way (that is directed exactly in the same direction). Along the way, we assume that all the leaves, we find ourselves (i.e., located at an altitude between the start and end sheet), but arranged differently. Numbering them, we will gradually make the turns around the stem (because the leaves are arranged on the stem in a spiral). Depending on whether to make the turns clockwise or counterclockwise, will get a different number of turns. But it turns out that the number of revolutions performed by us in a clockwise direction, the number of turns, improved anti-clockwise, and the number of leaves encountered form three consecutive Fibonacci numbers.
+
+However, it should be noted that there are plants for which the above calculations give the number of very different sequences and therefore can not be said that the phenomenon of phyllotaxis is the law - it is rather amusing tendency.
+
+\subsection{ Properties }
+
+Fibonacci numbers have many interesting mathematical properties.
+
+Here are some of them:
+
+Cassini ratio:
+$F_ {n +1} F_ {n-1} - F_n ^ 2 = (-1) ^ n.$
+
+The rule of "addition":
+$F_ {n + k} = F_k F_ {n +1} + F_ {k-1} F_n.$
+
+From the previous equation with $k = n$ follows:
+$F_ {2n} = F_n (F_ {n +1} + F_ {n-1}).$
+
+From the previous equality by induction we can show that
+$F_ {nk}$ always a multiple of $F_n$.
+
+The opposite is true of the previous statement:
+if $F_m$ Multiples $F_n$, Then $m$ Multiples $n$.
+
+GCD-equality:
+${\rm gcd} (F_m, F_n) = F_ {{\rm gcd} (m, n)}.$
+
+With respect to the Euclidean algorithm Fibonacci numbers have the remarkable property that they are the worst input to the algorithm (see "Theorem Lama" in the Euclidean algorithm ).
+\subsection{ Fibonacci number system }
+
+\textbf{Zeckendorf's theorem} states that any positive integer $n$ can be uniquely written as a sum of Fibonacci numbers:
+
+$N = F_ {k_1} + F_ {k_2} + \ldots + F_ {k_r}$
+
+where $k_1 \ge k_2 +2$, $k_2 \ge k_3 +2$, $\ldots$, $k_r \ge 2$ (i.e., can not be used in recording two consecutive Fibonacci numbers).
+
+It follows that any number can be written uniquely in the \textbf{Fibonacci number system,} for example:
+
+$9 = 8 +1 = F_6 + F_1 = (10,001) _F,$
+$6 = 5 +1 = F_5 + F_1 = (1001) _F,$
+$19 = 13 +5 +1 = F_7 + F_5 + F_1 = (101,001) _F,$
+
+and in any number can not go two units in a row.
+
+It is easy to get and usually adding one to the number in the Fibonacci number system, if a younger figure is 0, then it is replaced by 1, and if equal to 1 (i.e. at the end is 01), the 01 is replaced by 10. Then "fix" the record, consistently correcting all 011 at 100. As a result, linear time will get the record of the new number.
+
+Translation numbers in the Fibonacci number system with a simple "greedy" algorithm: just iterate through the Fibonacci numbers from largest to smallest, and if a $F_k \le n$, Then $F_k$ in the record of $n$ And we subtract $F_k$ from $n$ and continue the search.
+
+\subsection{ Formula for the n-th Fibonacci number }
+
+\subsubsection{ Formula by radicals }
+
+There is a remarkable formula, named for the French mathematician Binet (Binet), although it was known to him Moivre (Moivre):
+
+$$F_{n}=\frac{\left(\frac{1+\sqrt{5}}{2}\right)^{n}-\left(\frac{1-\sqrt{5}}{2}\right)^{n}}{\sqrt{5}}$$
+
+This formula is easy to prove by induction, but you can print it using the concept of generating functions, or with a solution of the functional equation.
+
+Immediately you will notice that the second term is always less than 1 in absolute value, and more than that, very rapidly (exponentially). This implies that the value of the first term gives the "almost" value $F_n$. This can be written in simple form:
+
+$$F_{n}=\left[\frac{\left(\frac{1+\sqrt{5}}{2}\right)^{n}}{\sqrt{5}}\right]$$
+
+where the square brackets denote rounding to the nearest integer.
+
+However, for practical use in the calculation of these formulas little fit, because it requires very high precision work with fractional numbers.
+
+\subsubsection{ The matrix formula for the Fibonacci numbers }
+
+It is easy to prove the following matrix equation:
+
+$\begin{pmatrix}F_{n-2} & F_{n-1}\end{pmatrix}\cdot\begin{pmatrix}0 & 1\\
+1 & 1
+\end{pmatrix}=\begin{pmatrix}F_{n-1} & F_{n}\end{pmatrix}$
+
+But then, denoting
+
+$P \equiv \begin{pmatrix} 0 & 1 \cr 1 & 1 \cr \end{pmatrix}$
+
+we get:
+
+$\begin{pmatrix}F_{0} & F_{1}\end{pmatrix}\cdot P^{n}=\begin{pmatrix}F_{n} & F_{n+1}\end{pmatrix}$
+
+Thus, to find $n$ Th Fibonacci number you want to raise a matrix $P$ to the power $n$.
+
+Remembering that the construction of the matrix in $n$ -Th power can be done for $O (\log n)$ (See binary exponentiation ), it appears that $n$ -Th Fibonacci number can be easily calculated for $O (\log n)$ c using only integer arithmetic.
+
+\subsection{ Periodicity of the modular Fibonacci sequence }
+
+Consider the Fibonacci sequence $F_i$ some modulo $p$. We prove that it is periodic, and with period begins $F_1 = 1$ (That contains only preperiod $F_0$ ).
+
+We prove this by contradiction. Consider $p ^ 2 +1$ pairs of Fibonacci numbers, taken modulo $p$ :
+
+$(F_{1},F_{2}),\,(F_{2},F_{3}),\ldots,\,(F_{p^{2}+1},F_{p^{2}+2})$
+
+Since modulo $p$ can only be $p ^ 2$ different pairs, of this sequence, there are at least two identical pairs. This already means that the sequence is periodic.
+
+We now choose among all such pairs of identical two identical pairs with the lowest number. Let this pair with some rooms $(F_a, F_ {a +1})$ and $(F_b, F_ {b +1})$. We will prove that $a = 1$. Indeed, otherwise they will have to previous pair $(F_ {a-1}, F_a)$ and $(F_ {b-1}, F_b)$ Which, by the property of Fibonacci numbers will be equal. However, this contradicts the fact that we have chosen the matching pairs with the lowest number, as required.
+
+\subsection{ Literature }
+
+Ronald Graham, Donald Knuth, and Oren Patashnik. \textbf{Concrete Mathematics} [1998]
+\section{ Modular inverse }
+\subsection{ Definition }
+
+Let a natural module $m$, And consider the ring formed by the module (i.e., consisting of the numbers $0$ to $m-1$ ). Then, for some elements of the ring you can find \textbf{an inverse.}
+
+The inverse of the number of $a$ modulo $m$ called a number $b$ That:
+
+$a \cdot b \equiv 1 \pmod m,$
+
+and it is often denoted by $a ^ {-1}$.
+
+Clearly, for zero return element exists ever, and for the remaining elements of the inverse can exist or not. Argued that the reverse is only available for those elements $a$ Which are \textbf{relatively prime} to the module $m$.
+
+Consider the following two ways of finding the inverse, work, provided that it exists.
+
+Finally, consider an algorithm that can find all the numbers back to some modulo linear time.
+
+\subsection{ Using Extended Euclidean algorithm }
+
+Consider the auxiliary equation (in the unknown $x$ and $y$ )
+
+$a \cdot x + m \cdot y = 1.$
+
+This is a linear Diophantine equation of the second order. As shown in the relevant article of the conditions ${\rm gcd} (a, m) = 1$ that this equation has a solution which can be found by using the Extended Euclidean algorithm (hence the same way, it follows that when ${\rm gcd} (a, m) \ne 1$, Solutions, and therefore the inverse, does not exist).
+
+On the other hand, if we take on both sides of the residue modulo $m$, We get:
+
+$a \cdot x = 1 \pmod m.$
+
+Thus found $x$ and will be the inverse of the $a$.
+
+Implementation (given the fact that the found $x$ we must take the modulo $m$ And $x$ could be negative):
+
+\begin{verbatim}
+int x, y ;
+int g = gcdex(a, m, x, y);
+if(g ! = 1 )
+    cout << "no solution" ;
+else {
+    x =(x % m + m)% m ;
+    cout << x ;
+} 
+\end{verbatim}
+Asymptotics of the solutions obtained $O (\log m)$.
+
+\subsection{ Using binary exponentiation }
+
+We use Euler's theorem:
+
+$a ^ {\phi (m)} \equiv 1 \pmod m,$
+
+which is true just in the case of prime $a$ and $m$.
+
+Incidentally, in the case of a simple module $m$ we have even more simple statement - Fermat's little theorem:
+
+$a ^ {m-1} \equiv 1 \pmod m.$
+
+Multiply both sides of each equation in the $a ^ {-1}$, We get:
+
+for any module $m$ :
+$a ^ {\phi (m) -1} \equiv a ^ {-1} \pmod m,$
+
+for the simple module $m$ :
+$a ^ {m-2} \equiv a ^ {-1} \pmod m.$
+
+Thus, we have the formula for the direct calculation of the inverse. For practical applications typically use efficient algorithm for binary exponentiation, which in this case would make for exponentiation $O (\log m)$.
+
+This method is somewhat easier in the last paragraph, but it requires knowledge of the values ​​of the Euler function that actually requires factoring module $m$ That can sometimes be very difficult.
+
+If the factorization of is known, then this method also works for the asymptotic $O (\log m)$.
+
+\subsection{ Finding all prime modular inverses in linear time }
+
+Given a simple module $m$. Required for each number in the interval $[1; m-1]$ find its inverse.
+
+Using the algorithms described above, we get a solution with the asymptotics $O (m \log m)$. Here we present a simple solution with the asymptotics $O (m)$.
+
+\textbf{The solution} is as follows. We denote $r [i]$ sought to reverse the number $i$ modulo $m$. Then for $i> 1$ true identity:
+
+$tesr[i]=-\left\lfloor \frac{m}{i}\right\rfloor \cdot r[m\mod i]\quad(\mod m)$
+
+\textbf{The implementation} of this laconic surprising solutions:
+
+\begin{verbatim}
+r[1]= 1 ;
+for(int i = 2 ; i < m ; ++ i )
+    r[i]=(m -(m / i)* r[m % i]% m)% m ; 
+\end{verbatim}
+\textbf{The proof} of this solution consists of a chain of simple transformations:
+
+We write the value $m {\rm ~ mod ~} i$ :
+
+$m\mod i=m-\left\lfloor \frac{m}{i}\right\rfloor i$
+
+whence, taking both sides modulo $m$, We get:
+
+$m\mod i=-\left\lfloor \frac{m}{i}\right\rfloor i\quad({\rm {\rm mod\,}}m)$
+
+Multiplying both sides by the inverse of $i$ and its inverse $(M {\rm ~ mod ~} i)$, We obtain the desired formula:
+
+$tesr[i]=-\left\lfloor \frac{m}{i}\right\rfloor \cdot r[m\mod i]\quad(\mod m)$
+
+as required.
+
+\section{ Gray code }
+\subsection{ Definition }
+
+Gray code numbering system is called a non-negative numbers when codes of two adjacent numbers differ in exactly one bit.
+
+For example, for numbers of length 3 bits have a sequence of Gray codes: $000$, $001$, $011$, $010$, $110$, $111$, $101$, $100$. For example, $G (4) = 6$.
+
+This code was invented by Frank Graham (Frank Gray) in 1953.
+
+\subsection{ Finding the Gray code }
+
+Consider the number of bits $n$ and the number of bits $G (n)$. Note that $i$ First bit $G (n)$ is unity only when $i$ First bit $n$ is unity, and $i +1$ Th bit is zero, or vice versa($i$ Th bit is zero, and $i +1$ First is equal to unity). Thus, we have: $G (n) = n \oplus (n >> 1)$ :
+
+\begin{verbatim}
+int g(int n){
+    return n ^(n >> 1);
+} 
+\end{verbatim}
+\subsection{ Finding the inverse of the Gray code }
+
+Required by the Gray code $g$ restore the original number $n$.
+
+We will go from bits to the younger (though most bit is 1 and the oldest - $k$ ). We get the following relations between the bits $n_i$ number $n$ and bits $g_i$ number $g$ :
+
+$n_k = g_k$
+
+$n_{k-1}=g_{k-1}\oplus n_{k}=g_{k}\oplus g_{k-1}$
+
+$n_{k-2}=g_{k-2}\oplus n_{k-1}=g_{k}\oplus g_{k-1}\oplus g_{k-2}$
+
+$\ldots$
+
+In the form of the code is easier to write this:
+
+\begin{verbatim}
+int rev_g(int g){
+    int n = 0 ;
+    for(; g ; g >>= 1 )
+        n ^ = g ;
+    return n ;
+} 
+\end{verbatim}
+\subsection{ Applications }
+
+Gray codes have several applications in various areas, sometimes quite unexpected:
+
+$n$ -Bit Gray code corresponds to a Hamiltonian cycle $n$ -Cube.
+In technology, Gray codes are used to \textbf{minimize errors} when converting analog to digital (eg, sensors). In particular, Gray codes were discovered in connection with this application.
+Gray codes are used in solving the problem of \textbf{the Tower of Hanoi.}
+Let $n$ - The number of disks. Let's start with the Gray code of length $n$ Consisting of all zeros (i.e. $G (0)$ ), And move on Gray codes (from $G (i)$ go to $G (i +1)$ ). To each $i$ -Th bit of the current Gray code $i$ First Drive (and the youngest bit with the smallest disk size, and most significant bit - the largest). Since at each step exactly one bit changes, then we can understand the change bit $i$ as moving $i$ The first disc. Note that all of the drives except the smallest, at each step there is exactly one option course (except for the starting and final positions). For the smallest disk always has two variations, but there is a strategy to choose the course, always leads to the answer: if $n$ odd, then the sequence of movements of the smallest drive is given $f \rightarrow t \rightarrow r \rightarrow f \rightarrow t \rightarrow r \rightarrow \ldots$ (Where $f$ - Starting rod $t$ - The final rod $r$ - The remainder of the rod), and if $n$ even, $f \rightarrow r \rightarrow t \rightarrow f \rightarrow r \rightarrow t \rightarrow \ldots$.
+
+Gray codes are also useful in the theory \textbf{of genetic algorithms.}
+\subsection{ Tasks in the online judges }
+
+List of tasks that can be taken using the Gray code:
+
+SGU 249 \textbf{"Matrix"} [Difficulty: Medium]
+\section{ Big integer arithmetic }
+Long arithmetic - a set of tools (data structures and algorithms) that let you work with numbers much larger quantities than permitted by the standard data types.
+
+\subsection{ Types of long integer arithmetic }
+
+Generally speaking, even if only in the Olympiad problems set of fairly large, so a classification of different types of long arithmetic.
+
+\subsubsection{ Classical long arithmetic }
+
+The basic idea is that the number is stored as an array of its digits.
+
+The numbers can be used from a given number system, commonly used decimal system and its degree (ten thousand billion), or binary notation.
+
+Operations on numbers in the form of long arithmetic done with "school" algorithms for addition, subtraction, multiplication, division bars. However, they are also useful for fast multiplication algorithms: Fast Fourier Transform and the Karatsuba algorithm.
+
+It describes the work only with non-negative long numbers. To support negative numbers to be entered and to support the additional flag "negative" number, or a work in complementary codes.
+
+Data structure
+Store a long number will be in the form of a vector of numbers $int$ Where every element - is a single digit number.
+
+\begin{verbatim}
+typedef vector < int > lnum ; 
+\end{verbatim}
+To improve efficiency in the system will work on the grounds billion, i.e. each element of the vector $lnum$ contains not one, but $9$ numbers:
+
+\begin{verbatim}
+const int base = 1000 * 1000 * 1000 ; 
+\end{verbatim}
+The numbers will be stored in a vector in such a manner that first there are the least significant digit (i.e., ones, tens, hundreds, and so on).
+
+In addition, all operations will be implemented in such a way that after any of them leading zeros (i.e. extra zeroes at the beginning of the number) are not (of course, assuming that prior to every leading zeroes are also available). It should be noted that in the implementation provided for the number of zero well supported just two representations: an empty vector of numbers, and a vector of numbers that contains a single element - zero.
+
+Output
+The most simple - this is the conclusion of a long number.
+
+First, we simply output the last element of the vector (or $0$ If the vector is empty), and then draw all the remaining elements of the vector, adding zeros to their $9$ characters:
+
+\begin{verbatim}
+printf("%d", a. empty() ? 0 : a. back());
+for(int i =(int)a. size() - 2 ; i >= 0 ; -- i )
+    printf("%09d", a[i ]); 
+\end{verbatim}
+(Here, a little subtle point: we must not forget to record the cast $(Int)$ Because otherwise the number $a.size()$ are unsigned, and if $a.size() \le 1$ Then the subtraction overflows)
+
+Reading
+Read a string $string$ And then convert it to a vector:
+
+\begin{verbatim}
+for(int i =(int)s. length() ; i > 0 ; i - = 9 )
+    if(i < 9 )
+        a. push_back(atoi(s. substr(0, i ). c_str())) ;
+    else
+        a. push_back(atoi(s. substr(i - 9, 9 ). c_str())) ; 
+\end{verbatim}
+If we use instead $string$ array $char$ 'S, the code will even smaller:
+
+\begin{verbatim}
+for(int i =(int)strlen(s); i > 0 ; i - = 9){
+    s[i]= 0 ;
+    a. push_back(atoi(i >= 9 ? s + i - 9 : s)) ;
+} 
+\end{verbatim}
+If the input number may already be leading zeros, they can be removed after reading this:
+
+\begin{verbatim}
+while(a. size() > 1 && a. back() == 0 )
+    a. pop_back() ; 
+\end{verbatim}
+Addition
+Adds to the number of $a$ number $b$ and stores the result in $a$ :
+
+\begin{verbatim}
+int carry = 0 ;
+for(size_t i = 0 ; i < max(a. size(),b. size())|| carry ; ++ i){
+    if(i == a. size() )
+        a. push_back(0);
+    a[i]+ = carry +(i < b. size() ? b[i]: 0);
+    carry = a[i]>= base ;
+    if(carry) a[i]- = base ;
+} 
+\end{verbatim}
+Subtraction
+Takes the number of $a$ number $b$($a \ge b$)And stores the result in $a$ :
+
+\begin{verbatim}
+int carry = 0 ;
+for(size_t i = 0 ; i < b. size() || carry ; ++ i){
+    a[i]- = carry +(i < b. size() ? b[i]: 0);
+    carry = a[i]< 0 ;
+    if(carry) a[i]+ = base ;
+}
+while(a. size() > 1 && a. back() == 0 )
+    a. pop_back() ; 
+\end{verbatim}
+Here we are after subtraction remove leading zeros to keep the predicate that they do not exist.
+
+Multiplying the length for a short
+Long multiplies $a$ briefly $b$($b <{\rm base}$)And stores the result in $a$ :
+
+\begin{verbatim}
+int carry = 0 ;
+for(size_t i = 0 ; i < a. size() || carry ; ++ i){
+    if(i == a. size() )
+        a. push_back(0);
+    long long cur = carry + a[i]* 1ll * b ;
+    a[i]= int(cur % base);
+    carry = int(cur / base);
+}
+while(a. size() > 1 && a. back() == 0 )
+    a. pop_back() ; 
+\end{verbatim}
+Here we are after the division remove leading zeros to keep the predicate that they do not exist.
+
+(Note: the way \textbf{for additional optimization.} If performance is critical, you can try to replace the two division one: consider only the integer portion of a division (in the code is the variable $carry$ ), And then count on it the remainder of the division (with one multiplication). Typically, this method can speed code, although not quite as much.)
+
+Multiply two long numbers
+Multiplies $a$ on $b$ and stores the result in $c$ :
+
+\begin{verbatim}
+lnum c(a. size() + b. size());
+for(size_t i = 0 ; i < a. size() ; ++ i )
+    for(int j = 0, carry = 0 ; j <(int)b. size() || carry ; ++ j){
+        long long cur = c[i + j]+ a[i]* 1ll *(j <(int)b. size() ? b[j]: 0)+ carry ;
+        c[i + j]= int(cur % base);
+        carry = int(cur / base);
+    }
+while(c. size() > 1 && c. back() == 0 )
+    c. pop_back() ; 
+\end{verbatim}
+Dividing the length of the short
+Divides long $a$ briefly $b$($b <{\rm base}$ ), Private stores $a$, The remainder in $carry$ :
+
+\begin{verbatim}
+int carry = 0 ;
+for(int i =(int)a. size() - 1 ; i >= 0 ; -- i){
+    long long cur = a[i]+ carry * 1ll * base ;
+    a[i]= int(cur / b);
+    carry = int(cur % b);
+}
+while(a. size() > 1 && a. back() == 0 )
+    a. pop_back() ; 
+\end{verbatim}
+\subsubsection{ Long arithmetic in the factored form }
+
+The idea here is not to store the number itself, and its factorization, i.e. degree of each of its constituent simple.
+
+This method is also very simple to implement, and it is very easy to perform multiplication and division, but you can not perform the addition or subtraction. On the other hand, this method saves memory in comparison with the "classical" approach, and allows you to divide and multiply significantly (asymptotically) faster.
+
+This method is often used when you need to perform on the delicate division of the module: then enough to store a number in the form of powers to the prime divisors of the module, and a single number - the balance on the same module.
+
+\subsubsection{ Long arithmetic in prime modulo (Chinese theorem or scheme Garner) }
+
+The bottom line is that you select a module system (usually a small, fit into the standard data types), and the number is stored as a vector from the remainder of his division for each of these modules.
+
+According to Chinese Remainder Theorem, it is enough to uniquely store any number from 0 to the product of these modules minus one. Thus there Garner algorithm, which allows to make a restoration of a modular form in the normal, "classical" form of the number.
+
+Thus, this method saves memory compared to the "classic" long arithmetic (although in some cases it is not as radical as the factorization method). In addition, the modular fashion can quickly perform addition, subtraction and multiplication, - all for asymptotically odnakovoe time proportional to the number of modules in the system.
+
+However, all of this is given to the cost of laborious translation of this modular form in the usual form, which, in addition to considerable time costs also need to implement the "classical" long arithmetic multiplication.
+
+In addition, to make \textbf{the division of} the numbers in this representation of the system of simple modules is not possible.
+
+\subsection{ Types of fractional long arithmetic }
+
+Operations on fractional numbers appear in Olympiad problems much less, and work with large fractional numbers is much more complicated, so the Olympics occurs only specific subset of fractional long arithmetic.
+
+\subsubsection{ Long arithmetic of irreducible fractions }
+
+Number is represented as an irreducible fraction $\frac {a} {b}$ Where $a$ and $b$ - Integers. Then all operations with fractional numbers easily reduced to operations on the numerators and denominators of the fractions.
+
+Usually, the storage of the numerator and denominator must also use a long arithmetic, but, however, it is the simplest form - the "classic" long arithmetic, but sometimes enough is embedded 64-bit numeric type.
+
+\subsubsection{ Allocation of positions in a separate floating-point type }
+
+Sometimes the problem is to make calculations with very large or very small numbers, but it does not prevent them from overflowing. Built-in $8.10$ Byte type $double$ As is known, allows the exponent value in the range $[-308, 308]$, Which can sometimes be enough.
+
+Reception, in fact, very simple - introduce another integer variable, responsible for the exhibitor, and after each operation a float "normal", i.e. returns to the segment $[0.1, 1)$, By increasing or decreasing exponential.
+
+When multiplying or dividing two such numbers must add or subtract, respectively, of their exponents. When adding or subtracting before proceeding number should lead to a single exponential function, for which one of them is multiplied by $10$ difference in the degree of exponents.
+
+Finally, it is clear that it is not necessary to choose $10$ as the base of the exponent. Based on the embedded device floating-point types, the best is to lay the basis of equal $2$.
+
+\section{ Discrete logarithm }
+Discrete logarithm problem is that according to the whole $a$, $b$, $m$ solve the equation:
+
+$a ^ x = b \pmod m,$
+
+where $a$ and $m$ - \textbf{Coprime} (note: if they are not relatively prime, then the algorithm described below is incorrect, although presumably it can be modified so that it was still working).
+
+Here we describe an algorithm, known as the \textbf{"baby-step-giant-step algorithm",} proposed by \textbf{Shanks} in 1971, working for a time $O (\sqrt {m} \log m)$. Often this simple algorithm is an algorithm \textbf{"meet-in-the-middle"} (because it is one of the classic applications of technology "meet-in-the-middle": "separation of tasks in half").
+
+\subsection{ Algorithm }
+
+So, we have the equation:
+
+$a ^ x = b \pmod m,$
+
+where $a$ and $m$ coprime.
+
+Transform equation. We set
+
+$x = np - q,$
+
+where $n$ - Is a pre-selected constant (as it is chosen according to $m$ We will understand later). Sometimes $p$ called "giant step" (as an increase in its per unit increases $x$ at once $n$ ), And in contrast, the $q$ - "Baby step".
+
+Obviously, any $x$ (The interval $[0; m)$ - It is clear that this range of values ​​will do) can be represented in this form, and for the values ​​that will be enough:
+
+$p\in\left[1;\left\lceil \frac{m}{n}\right\rceil \right],\qquad q\in[0;n]$
+
+Then the equation becomes:
+
+$a ^ {np-q} = b \pmod m,$
+
+hence, using the fact that $a$ and $m$ coprime, we get:
+
+$a ^ {np} = b a ^ q \pmod m.$
+
+In order to solve the original equation, you need to find the corresponding values $p$ and $q$ That the values ​​of the left and right sides of the match. In other words, it is necessary to solve the equation:
+
+$f_1 (p) = f_2 (q).$
+
+This problem is solved by the meet-in-the-middle as follows. The first phase of the algorithm: calculate the value of the function $f_1$ for all values ​​of the argument $p$, And sort these values. The second phase of the algorithm, we will sort out the value of the second variable $q$, Calculate a second function $f_2$, And look for the value of the predicted values ​​of the first function, the binary search.
+
+\subsection{ Asymptotics }
+
+First, we estimate the computation of each function $f_1 (p)$ and $f_2 (q)$. And she and the other contains the exponentiation, which can be performed using the algorithm of binary exponentiation. Then both of these functions, we can calculate the time $O (\log m)$.
+
+The algorithm in the first phase includes a function evaluation $f_1 (p)$ for each possible value $p$ and further sort the values, which gives us the asymptotics
+
+$O\left(\left\lceil \frac{m}{n}\right\rceil \left(\log m+\log\left\lceil \frac{m}{n}\right\rceil \right)\right)=O\left(\left\lceil \frac{m}{n}\right\rceil \log m\right)$
+
+In the second phase of the algorithm is a function evaluation $f_2 (q)$ for each possible value $q$ and binary search on the array of values $f_1$, Which gives us the asymptotics
+
+$O\left(n\left(\log m+\log\left\lceil \frac{m}{n}\right\rceil \right)\right)=O\left(n\log m\right)$
+
+Now, when we combine these two asymptotics, we can do it $\log m$ Multiplied by the amount $n$ and $m / n$ And almost obvious that the minimum is achieved when $n \approx m / n$ i.e. algorithm for optimal constant $n$ should be selected:
+
+$n \approx \sqrt {m}.$
+
+Then the asymptotic behavior of the algorithm takes the form:
+
+$O \left (\sqrt {m} ~ \log m \right).$
+
+Note. We could swap roles $f_1$ and $f_2$ (i.e., in the first phase to calculate the values ​​of $f_2$, And the second - $f_1$ ), But it is easy to understand that the result will not change, and the asymptotic behavior, we can not improve it.
+
+\subsection{ Implementation }
+
+\subsubsection{ The simplest implementation }
+
+Function $\rm powmod$ performs a binary construction of $a$ to the power $b$ modulo $m$ See binary exponentiation.
+
+Function $\rm solve$ produce its own solution. This function returns a response (the number in the interval $[0; m)$ ), Or more precisely, one of the answers. The function returns $-1$ If there is no solution.
+
+\begin{verbatim}
+int powmod(int a, int b, int m){
+    int res = 1 ;
+    while(b > 0 )
+        if(b & 1){
+            res =(res * a)% m ;
+            -- b ;
+        }
+        else {
+            a =(a * a)% m ;
+            b >>= 1 ;
+        }
+    return res % m ;
+}
+ 
+int solve(int a, int b, int m){
+    int n =(int)sqrt(m +.0)+ 1 ;
+    map < int, int > vals ;
+    for(int i = n ; i >= 1 ; -- i )
+        vals[powmod(a, i * n, m)] = i ;
+    for(int i = 0 ; i <= n ; ++ i){
+        int cur =(powmod(a, i, m)* b)% m ;
+        if(vals. count(cur)) {
+            int ans = vals[cur]* n - i ;
+            if(ans < m )
+                return ans ;
+        }
+    }
+    return - 1 ;
+} 
+\end{verbatim}
+Here, for convenience in implementing the first phase of the algorithm used the data structure "map" (red-black tree), which for each value of the function $f_1 (i)$ argument holds $i$ At which this value is reached. Moreover, if the same value is reached several times, recorded the smallest of all the arguments. This is done so that later on, in the second phase of the algorithm, found the answer in the space $[0; m)$.
+
+Given that the argument $f_1()$ in the first phase we pawing away from one and up to $n$ And argument $f_2()$ in the second phase moves from zero to $n$, In the end, we cover the whole set of possible answers, because segment $[0; n ^ 2]$ contains a gap $[0; m)$. In this case, the negative response could happen, and the responses, greater than or equal $m$ We can ignore - should still be the corresponding answers from the interval $[0; m)$.
+
+This function can be changed in case you want to find \textbf{all the solutions} of the discrete logarithm. To do this, replace "map" to some other data structure, which allows to store for one argument multiple values ​​(for example, "multimap"), and modify the code of the second phase.
+
+\subsubsection{ An improved implementation }
+
+When \textbf{optimizing for speed} can proceed as follows.
+
+First, immediately evident uselessness binary exponentiation in the second phase of the algorithm. Instead, you can just make a variable and multiplies it every time $a$.
+
+Second, the same way you can get rid of the binary exponentiation, and in the first phase: in fact, once is enough to calculate the value of $a ^ n$, And then it just multiplies it.
+
+Thus, the logarithm in the asymptotic behavior will remain, but it will be only the log associated with the data structure $map <>$ (i.e., in terms of algorithms, sorting and binary search values) - i.e. this will be the logarithm of the $\sqrt {m}$ That in practice, gives a noticeable boost.
+
+\begin{verbatim}
+int solve(int a, int b, int m){
+    int n =(int)sqrt(m +.0)+ 1 ;
+ 
+    int an = 1 ;
+    for(int i = 0 ; i < n ; ++ i )
+        an =(an * a)% m ;
+ 
+    map < int, int > vals ;
+    for(int i = 1, cur = an ; i <= n ; ++ i){
+        if(! vals. count(cur))
+            vals[cur]= i ;
+        cur =(cur * an)% m ;
+    }
+ 
+    for(int i = 0, cur = b ; i <= n ; ++ i){
+        if(vals. count(cur)) {
+            int ans = vals[cur]* n - i ;
+            if(ans < m )
+                return ans ;
+        }
+        cur =(cur * a)% m ;
+    }
+    return - 1 ;
+} 
+\end{verbatim}
+Finally, if a module $m$ is small enough, it can and does get rid of the logarithm in the asymptotic behavior - instead of just having got $map <>$ an array.
+
+You can also recall the hash table: on average, they also work for $O (1)$ That generally gives the asymptotics $O (\sqrt {m})$.
+
+\section{ Linear Diophantine equations in two variables }
+Diophantine equation with two unknowns is:
+
+$a \cdot x + b \cdot y = c,$
+
+where $a, b, c$ - Given integers, $x$ and $y$ - Unknown integers.
+
+Below are several classical problems of these equations to find any solution to obtain all solutions, finding the number of solutions and the solutions themselves in a certain period, to find the solution with the least amount of unknowns.
+
+\subsection{ The degenerate case }
+
+A degenerate case we will exclude from consideration, when $a = b = 0$. In this case, of course, the equation has either an infinite number of arbitrary decisions, or do not have any solutions at all (depending on whether $c = 0$ or not).
+
+\subsection{ Finding the solutions }
+
+Find one of the solutions of the Diophantine equation with two unknowns, you can use the Extended Euclidean algorithm. We first assume that the number of $a$ and $b$ nonnegative.
+
+Extended Euclidean algorithm for a given non-negative numbers $a$ and $b$ finds the greatest common divisor $g$ As well as such factors $x_g$ and $y_g$ That:
+
+$a \cdot x_g + b \cdot y_g = g.$
+
+States that if the $c$ divided by $g = {\rm gcd} (a, b)$, The Diophantine equation $a \cdot x + b \cdot y = c$ has a solution, otherwise the Diophantine equation has no solutions. This follows from the simple fact that a linear combination of two numbers should continue to be divided by their common divisor.
+
+Suppose that $c$ divided by $g$ Then obviously holds:
+
+$a\cdot x_{g}\cdot(c/g)+b\cdot y_{g}\cdot(c/g)=c$
+
+i.e. one of the solutions of the Diophantine equation are the numbers:
+
+$\begin{cases}
+x_{0}=x_{g}\cdot(c/g)\\
+y_{0}=y_{g}\cdot(c/g)
+\end{cases}$
+
+We have described the decision in the case where the number of $a$ and $b$ nonnegative. If one of them or both of them are negative, then you can do so: take them to the module and to apply the Euclidean algorithm, as described above, and then change the sign found $x_0$ and $y_0$ according to the sign of the numbers $a$ and $b$ respectively.
+
+Implementation (remember here we assume that the input data $a = b = 0$ allowed):
+
+\begin{verbatim}
+int gcd(int a, int b, int & x, int & y){
+    if(a == 0){
+        x = 0 ; y = 1 ;
+        return b ;
+    }
+    int x1, y1 ;
+    int d = gcd(b % a, a, x1, y1);
+    x = y1 -(b / a)* x1 ;
+    y = x1 ;
+    return d ;
+}
+ 
+bool find_any_solution(int a, int b, int c, int & x0, int & y0, int & g){
+    g = gcd(abs(a ), abs(b ), x0, y0);
+    if(c % g ! = 0 )
+        return false ;
+    x0 * = c / g ;
+    y0 * = c / g ;
+    if(a < 0)  x0 * = - 1 ;
+    if(b < 0)  y0 * = - 1 ;
+    return true ;
+} 
+\end{verbatim}
+\subsection{ Getting all the solutions }
+
+We show how to get all the other solutions (and their infinite set) Diophantine equation, knowing one of the solutions $(X_0, y_0)$.
+
+So, let $g = {\rm gcd} (a, b)$ And the numbers $x_0, y_0$ satisfy the condition:
+
+$a \cdot x_0 + b \cdot y_0 = c.$
+
+Then we observe that, by adding to $x_0$ number $b / g$ while depriving $a / g$ from $y_0$ We will not violate equality:
+
+$a(x_{0}+b/g)+b(y_{0}-a/g)=ax_{0}+by_{0}+a\cdot b/g-b\cdot a/g=c$
+
+Obviously, this process can be repeated any number, i.e. all numbers of the form:
+
+$
+ \begin{cases}
+x_{0}=x_{0}+k\cdot b/g\\
+y_{0}=y_{0}-k\cdot a/g
+\end{cases}\quad k\in\mathbb{Z}
+$
+
+are solutions of the Diophantine equation.
+
+Moreover, only the number of this type and are the solutions, i.e., We describe the set of solutions of the Diophantine equation (it turned out to be infinite if not impose additional conditions).
+
+\subsection{ The number of solutions and themselves in a given interval }
+
+Given two segments $[min_x; max_x]$ and $[min_y; max_y]$ And want to find the number of solutions $(X, y)$ Diophantine equations underlying the data segments, respectively.
+
+Note that if one of the numbers $a, b$ is zero, then the problem has no more than one solution, so these cases will be in this section is not considered.
+
+We first find a suitable solution with a minimum $x$ i.e. $x \ge min_x$. To do this, first find any solution of the Diophantine equation (see paragraph 1). Then get out of it with the least solution $x \ge min_x$ - For this, we use the procedure described in the previous paragraph, and will increase / $x$, Until it is $\ge min_x$, And thus minimal. This can be done $O (1)$, Arguing with what factor should apply this transformation to get the minimum number greater than or equal $min_x$. Denote found $x$ through $lx1$.
+
+Similarly, you can find the most suitable solution $x = rx1$ i.e. $x \le max_x$.
+
+Then proceed to the satisfaction of constraints on $y$ i.e. consideration of the segment $[min_y; max_y]$. In the manner described above, we find a solution with the minimum $y \ge min_y$ And the decision with the maximum $y \le max_y$. Denote $x$ Coefficients of these decisions through $lx2$ and $rx2$ respectively.
+
+Cross sections $[lx1; rx1]$ and $[lx2; rx2]$ And denote the resulting segment by $[lx; rx]$. States that any decision which $x$ Coefficient is in the $[lx; rx]$ - Any such decision is appropriate. (This is true by the construction of this segment: we first met separately restrictions $x$ and $y$, Having two segments, and then crossed them, having an area in which both conditions are satisfied.)
+
+Thus, the number of solutions to be equal to the length of this interval, divided by the $| B |$ (Because $x$ Coefficient can be changed only by $\pm b$ ), Plus one.
+
+We present the implementation (it is already too complex, as it requires carefully consider the cases of positive and negative coefficients $a$ and $b$ )
+
+\begin{verbatim}
+void shift_solution(int & x, int & y, int a, int b, int cnt){
+    x + = cnt * b ;
+    y - = cnt * a ;
+}
+ 
+int find_all_solutions(int a, int b, int c, int minx, int maxx, int miny, int maxy){
+    int x, y, g ;
+    if(! find_any_solution(a, b, c, x, y, g))
+        return 0 ;
+    a / = g ;  b / = g ;
+ 
+    int sign_a = a > 0 ? + 1 : - 1 ;
+    int sign_b = b > 0 ? + 1 : - 1 ;
+ 
+    shift_solution(x, y, a, b,(minx - x)/ b);
+    if(x < minx )
+        shift_solution(x, y, a, b, sign_b);
+    if(x > maxx )
+        return 0 ;
+    int lx1 = x ;
+ 
+    shift_solution(x, y, a, b,(maxx - x)/ b);
+    if(x > maxx )
+        shift_solution(x, y, a, b, - sign_b);
+    int rx1 = x ;
+ 
+    shift_solution(x, y, a, b, -(miny - y)/ a);
+    if(y < miny )
+        shift_solution(x, y, a, b, - sign_a);
+    if(y > maxy )
+        return 0 ;
+    int lx2 = x ;
+ 
+    shift_solution(x, y, a, b, -(maxy - y)/ a);
+    if(y > maxy )
+        shift_solution(x, y, a, b, sign_a);
+    int rx2 = x ;
+ 
+    if(lx2 > rx2 )
+        swap(lx2, rx2);
+    int lx = max(lx1, lx2);
+    int rx = min(rx1, rx2);
+ 
+    return(rx - lx)/ abs(b)+ 1 ;
+} 
+\end{verbatim}
+It is also easy to add to this realization, the withdrawal of all of these solutions: it is sufficient to sort $x$ in the interval $[lx; rx]$ increments $| B |$ By finding each of them corresponding $y$ from equation $ax + by = c$.
+
+\subsection{ Solutions in a given interval with the least value of x + y }
+
+Here at $x$ and $y$ should also be imposed any restrictions, otherwise the answer will almost always be negative infinity.
+
+The idea of ​​the solution is the same as in the previous paragraph, first find any solution of the Diophantine equation, and then to apply this procedure in the previous section, we arrive at the best solution.
+
+Indeed, we have the right to do the following transformation (see the previous paragraph)
+
+$\begin{cases}
+x'=x+k\cdot b/g\\
+y'=y-k\cdot a/g
+\end{cases}\quad k\in\mathbb{Z}$
+
+Note that with the amount of $x + y$ changes as follows:
+
+$x'+y'=x+y+k\cdot(b/g-a/g)=x+y+k\cdot(b-a)/g$
+
+i.e. if $a <b$, Then you need to choose as low as possible $k$ If $a> b$, Then you need to choose the largest possible value $k$.
+
+If $a = b$, Then we will not be able to improve the solution - all solutions will have the same amount.
+
+\subsection{ Tasks in the online judges }
+
+List of tasks that can be taken on the subject of Diophantine equations with two unknowns:
+
+SGU 106 \textbf{"The Equation"} [Difficulty: Medium]
+
+\section{ Modular linear equations of the first order }
+\subsection{ Statement of the problem }
+
+This equation is of the form:
+
+$a \cdot x = b \pmod n,$
+
+where $a, b, n$ - Given integers, $x$ - An unknown integer.
+
+Required to find the desired value $x$ Lying in the interval $[0; n-1]$ (As on the real line, it is clear there can be an infinite number of solutions that are different each other $n \cdot k$ Where $k$ - Any integer). If the solution is not unique, then we will see how to get all the solutions.
+
+\subsection{ Solution by finding an inverse element }
+
+Consider first the simplest case - when $a$ and $n$ \textbf{coprime.} Then we can find the inverse of a number $a$, And multiplying on both sides of it, to get a solution (and it will be \textbf{the only one):}
+
+$x = b \cdot a ^ {-1} \pmod n$
+
+Now consider the case where $a$ and $n$ \textbf{not relatively prime.} Then, obviously, the decision will not always exist (for example, $2 \cdot x = 1 \pmod 4$ ).
+
+Let $g = {\rm gcd (a, n)}$ i.e. their greatest common divisor (which in this case is greater than one).
+
+Then, if the $b$ is not divisible by $g$, Then there is no solution. In fact, for any $x$ the left side of the equation, i.e. $(A \cdot x) \pmod n$ Always divisible by $g$, While the right side of it is not divisible, which implies that there are no solutions.
+
+If the $b$ divided by $g$ Then, dividing both sides by it $g$ (i.e., dividing $a$, $b$ and $n$ on $g$ ), We arrive at a new equation:
+
+$a ^ \prime \cdot x = b ^ \prime \pmod {n ^ \prime}$
+
+which $a ^ \prime$ and $n ^ \prime$ already be relatively prime, and this equation we have learned to solve. We denote its solution by $x ^ \prime$.
+
+Clearly, this is $x ^ \prime$ will also be a solution of the original equation. However, if the $g> 1$, Then it will \textbf{not} be \textbf{the only} solution. It can be shown that the original equation will have exactly $g$ decisions, and they will look like:
+
+$x_i = (x ^ \prime + i \cdot n ^ \prime) \pmod n,$
+$i = 0 \ldots (g-1).$
+
+Summarizing, we can say that the \textbf{number of solutions to} linear modular equation is either $g = {\rm gcd (a, n)}$ Or zero.
+
+\subsection{ Solution with the Extended Euclidean algorithm }
+
+We present our modular equation to a Diophantine equation as follows:
+
+$a \cdot x + n \cdot k = b,$
+
+where $x$ and $k$ - Unknown integers.
+
+The method of solving this equation is described in the relevant article of linear Diophantine equations of the second order, and consists in the application of the extended Euclid algorithm.
+
+It also described the method for preparing all the solutions of this equation, one solution found, and, by the way, this way a careful examination is equivalent to the method described in the previous paragraph.
+
+\section{ The Chinese remainder theorem }
+\subsection{ Formulation }
+
+In its modern formulation of the theorem is:
+
+Let $p = p_1 \cdot p_2 \cdot \ldots \cdot p_k$ Where $p_i$ - Pairwise relatively prime.
+
+We assign to any number $a$$(0 \le a <p)$ train $(A_1, \ldots, a_k)$ Where $a_i \equiv a \pmod {p_i}$ :
+
+$a \Longleftrightarrow (a_1, \ldots, a_k).$
+
+Then the correspondence (between numbers and tuples) will be \textbf{one to one.} And, moreover, operation over the number of $a$, Can be equivalently performed on the corresponding elements of tuples - through independent operations on each component.
+
+That is, if
+
+$a\Leftrightarrow\left(a_{1},\ldots,a_{k}\right)$
+$b\Leftrightarrow\left(b_{1},\ldots,b_{k}\right)$
+
+then we have:
+
+$(a+b)\quad({\rm mod\, p})\Leftrightarrow\left((a_{1}+b_{1})\quad({\rm mod\, p_{1}}),\ldots,(a_{k}+b_{k})\quad({\rm mod\, p_{k}})\right)$
+
+$(a-b)\quad({\rm mod\, p})\Leftrightarrow\left((a_{1}-b_{1})\quad({\rm mod\, p_{1}}),\ldots,(a_{k}-b_{k})\quad({\rm mod\, p_{k}})\right)$
+
+$(a\cdot b)\quad({\rm mod\, p})\Leftrightarrow\left((a_{1}\cdot b_{1})\quad({\rm mod\, p_{1}}),\ldots,(a_{k}\cdot b_{k})\quad({\rm mod\, p_{k}})\right)$
+
+In its original formulation, this theorem was proved by the Chinese mathematician Sun Tzu around 100 BC Specifically, he showed in the particular case of the equivalence of solutions of the system of modular equations and solutions of one of the modular equation (see Corollary 2 below).
+
+\subsubsection{ Corollary 1 }
+
+Modular system of equations:
+
+$\begin{cases}
+x\equiv a_{1} & \mod p_{1}\\
+\ldots\\
+x\equiv a_{k} & \mod p_{k}
+\end{cases}
+ $
+
+has a unique solution modulo $p$.
+
+(As above, $p = p_1 \cdot \ldots \cdot p_k$, The number of $p_i$ are relatively prime, and a set $a_1, \ldots, a_k$ - Arbitrary set of integers)
+
+\subsubsection{ Corollary 2 }
+
+The consequence is the connection between the system of modular equations and a corresponding modular equation:
+
+Equation:
+
+$x \equiv a \pmod p$
+
+equivalent to the system of equations:
+
+$\begin{cases}
+x\equiv a & \mod p_{1}\\
+\ldots\\
+x\equiv a & \mod p_{k}
+\end{cases}$
+
+(As above, it is assumed that $p = p_1 \cdot \ldots \cdot p_k$, The number of $p_i$ are relatively prime, and $a$ - An arbitrary integer)
+
+\subsection{ Garner's algorithm }
+
+Of the Chinese remainder theorem implies that we can replace operations on the number of operations on tuples. Recall, each number $a$ is associated with a tuple $(A_1, \ldots, a_k)$ Where:
+
+${A_i \equiv a \pmod {p_i}}.$
+
+It can be widely used in practice (in addition to the direct application to restore the number on it balances on the various modules), because we are so we can replace surgery in a long arithmetic operations with an array of "short" numbers. For example, an array of $1000$ elements of "enough" to the numbers around $3000$ signs (if selected as $p_i$ 's First $1000$ simple), and if selected as a $p_i$ 's Simple about a billion, then enough already for a number with a $9000$ signs. But, of course, then you need to learn how to \textbf{restore} the number of $a$ this tuple. Corollary 1 shows that such a recovery is possible, and only one (if $0 \le a <p_1 \cdot p_2 \cdot \ldots \cdot p_k$ ). \textbf{Garner algorithm} is an algorithm that allows to perform this recovery, and quite effectively.
+
+We seek a solution in the form:
+
+$a=x_{1}+x_{2}\cdot p_{1}+x_{3}\cdot p_{1}\cdot p_{2}+\ldots+x_{k}\cdot p_{1}\cdot\ldots\cdot p_{k-1}$
+
+i.e. the mixed radix digits with weights $p_1, p_2, \ldots, p_k$.
+
+We denote $r_ {ij}$($i = 1 \ldots k-1$, $j = i +1 \ldots k$)Number, which is the inverse of $p_i$ modulo $p_j$ (Finding the inverse elements in the ring mod described here :
+
+$r_ {ij} = (p_i) ^ {-1} \pmod {p_j}.$
+
+We substitute $a$ in a mixed notation in the first equation, we get:
+
+$a_1 \equiv x_1.$
+
+Now substitute in the second equation:
+
+$a_2 \equiv x_1 + x_2 \cdot p_1 \pmod {p_2}.$
+
+Transform this expression, claimed by both sides $x_1$ and dividing by the $p_1$ :
+
+$a_2 - x_1 \equiv x_2 \cdot p_1 \pmod {p_2};$
+$(A_2 - x_1) \cdot r_ {12} \equiv x_2 \pmod {p_2};$
+$x_2 \equiv (a_2 - x_1) \cdot r_ {12} \pmod {p_2}.$
+
+Substituting into the third equation, the same way we get:
+
+$a_{3}\equiv x_{1}+x_{2}\cdot p_{1}+x_{3}\cdot p_{1}\cdot p_{2}\quad({\rm mod\, p}_{3})$
+
+$(a_{3}-x_{1})\cdot r_{13}\equiv x_{2}+x_{3}\cdot p_{2}\quad({\rm mod\, p}_{3})$
+
+$((a_{3}-x_{1})\cdot r_{13}-x_{2})\cdot r_{23}\equiv x_{3}\quad({\rm mod\, p}_{3})$
+
+$x_{3}\equiv((a_{3}-x_{1})\cdot r_{13}-x_{2})\cdot r_{23}\quad({\rm mod\, p}_{3})$
+
+Already quite clear pattern that is easier to express code:
+
+\begin{verbatim}
+for(int i = 0 ; i < k ; ++ i){
+    x[i]= a[i];
+    for(int j = 0 ; j < i ; ++ j){
+        x[i]= r[j ][ i]*(x[i]- x[j ]);
+ 
+        x[i]= x[i]% p[i];
+        if(x[i]< 0) x[i]+ = p[i];
+    }
+} 
+\end{verbatim}
+So we learned to calculate coefficients $x_i$ during $O (k ^ 2)$, The very same answer - the number of $a$ - Can be restored as follows:
+
+$a=x_{1}+x_{2}\cdot p_{1}+x_{3}\cdot p_{1}\cdot p_{2}+\ldots+x_{k}\cdot p_{1}\cdot\ldots\cdot p_{k-1}$
+
+It is worth noting that, in practice almost always calculate the answer to using long arithmetic, but the coefficients themselves $x_i$ still calculated on the built-in types, and therefore the entire algorithm Garner is highly effective.
+
+\subsection{ Implementation of the Garner algorithm }
+
+It's best to implement this algorithm in Java, because it contains a standard-length arithmetic, and therefore there are no problems with the transfer of the modular system of the usual number (the standard class BigInteger).
+
+The following implementation of the algorithm Garner supports addition, subtraction, multiplication, and supports negative numbers here (see explanations after the code). Implemented transfer of conventional desyatichkogo submission modular system and vice versa.
+
+This example is taken $100$ after simple $10 ^ 9$, Which makes working with numbers up to about $10 ^ {900}$.
+
+\begin{verbatim}
+final int SZ = 100 ;
+int pr[] = new int[SZ];
+int r[][]= new int[SZ ][ SZ];
+ 
+void init() {
+    for(int x = 1000 * 1000 * 1000, i = 0 ; i < SZ ; ++ x )
+        if(BigInteger. valueOf(x ). isProbablePrime(100))
+            pr[i ++]= x ;
+ 
+    for(int i = 0 ; i < SZ ; ++ i )
+        for(int j = i + 1 ; j < SZ ; ++ j )
+            r[i ][ j]= BigInteger. valueOf(pr[i]). modInverse (
+                    BigInteger. valueOf(pr[j ])). intValue() ;
+}
+ 
+ 
+class Number {
+ 
+    int a[] = new int[SZ];
+ 
+    public Number() {
+    }
+ 
+    public Number(int n){
+        for(int i = 0 ; i < SZ ; ++ i )
+            a[i]= n % pr[i];
+    }
+ 
+    public Number(BigInteger n){
+        for(int i = 0 ; i < SZ ; ++ i )
+            a[i]= n. mod(BigInteger. valueOf(pr[i ])). intValue() ;
+    }
+ 
+    public Number add(Number n){
+        Number result = new Number() ;
+        for(int i = 0 ; i < SZ ; ++ i )
+            result. a[i]=(a[i]+ n. a[i ])% pr[i];
+        return result ;
+    }
+ 
+    public Number subtract(Number n){
+        Number result = new Number() ;
+        for(int i = 0 ; i < SZ ; ++ i )
+            result. a[i]=(a[i]- n. a[i]+ pr[i ])% pr[i];
+        return result ;
+    }
+ 
+    public Number multiply(Number n){
+        Number result = new Number() ;
+        for(int i = 0 ; i < SZ ; ++ i )
+            result. a[i]=(int )(( a[i]* 1l * n. a[i ])% pr[i ]);
+        return result ;
+    }
+ 
+    public BigInteger bigIntegerValue(boolean can_be_negative){
+        BigInteger result = BigInteger. ZERO,
+            mult = BigInteger. ONE ;
+        int x[] = new int[SZ];
+        for(int i = 0 ; i < SZ ; ++ i){
+            x[i]= a[i];
+            for(int j = 0 ; j < i ; ++ j){
+                long cur =(x[i]- x[j ])* 1l * r[j ][ i];
+                x[i]=(int )(( cur % pr[i]+ pr[i ])% pr[i ]);                    
+            }
+            result = result. add(mult. multiply(BigInteger. valueOf(x[i ])));
+            mult = mult. multiply(BigInteger. valueOf(pr[i ])) ;
+        }
+ 
+        if(can_be_negative )
+            if(result. compareTo(mult. shiftRight(1)) >= 0 )
+                result = result. subtract(mult);
+ 
+        return result ;
+    }
+} 
+\end{verbatim}
+
+Support for the \textbf{negative} numbers deserves mention (flag $\rm can \_be \_negative$ function ${\rm bigIntegerValue}()$ ). Modular scheme itself does not suggest differences between positive and negative numbers. However, you can see that if the answer to a specific problem do not exceed half of the product of all prime, positive numbers will be different from the negative that positive numbers get less of the middle, and the negative - more. Therefore, we are after classical algorithm Garner compares results to the middle, and if it is, then we obtain a minus, and invert the result (i.e., subtract it from the product of all prime, and print it already).
+
+\section{ Determining a power divisor for factorial }
+Given two numbers: $n$ and $k$. Required to calculate with any degree of the divisor $k$ among $n!$ i.e. find the greatest $x$ such that $n!$ divided by $k ^ x$.
+
+\subsection{ Solution for the case of a simple $k$}
+
+Consider first the case when $k$ simple.
+
+We write down the expression for the factorial explicitly:
+
+$n! = 1\ 2\ 3\ \ldots (n-1)\ n$
+
+Note that each $k$ Nth term of this work is divided into $k$ i.e. allows one to account, the number of such members as well $\lfloor n / k \rfloor$.
+
+Furthermore, we note that each $k ^ 2$ Th term of this series is divided into $k ^ 2$ i.e. gives another one to the answer (given that $k$ in the first degree has been considered before), the number of such members as well $\lfloor n / k ^ 2 \rfloor$.
+
+And so on, each $k ^ i$ Th term of the series gives one to answer, and the number of such members as well $\lfloor n / k ^ i \rfloor$.
+
+So the answer is equal to the:
+
+$\frac{n}{k}+\frac{n}{k^{2}}+\ldots+\frac{n}{k^{i}}+\ldots$
+
+This amount is, of course, is not infinite, as Only the first of about $\log_k n$ members of the non-zero. Therefore, the asymptotic behavior of the algorithm is $O (\log_k n)$.
+
+Implementation:
+
+\begin{verbatim}
+int fact_pow(int n, int k){
+    int res = 0 ;
+    while(n){
+        n / = k ;
+        res + = n ;
+    }
+    return res ;
+} 
+\end{verbatim}
+\subsection{ Solution for the case of composite $k$}
+
+The same idea is applied directly anymore.
+
+But we can factorize $k$ To solve the problem for each of its prime divisors, and then select a minimum of the answers.
+
+More formally, let $k_i$ - Is $i$ First factor of the number $k$, Part of his degree $p_i$. We solve the problem for $k_i$ with the above formula for $O (\log n)$ And let us get a reply ${\rm Ans} _i$. Then the answer for the composite $k$ will be a minimum of values ${\rm Ans} _i / p_i$.
+
+Given that the factorization is performed in a very simple manner $O (\sqrt {k})$, We obtain the final asymptotic $O (\sqrt {k})$.
+
+\section{ Balanced ternary number system }
+Balanced ternary number system - a non-standard positional notation. The base system is equal to $3$ But it differs from the usual ternary fact that the numbers are $-1, 0, 1$. Since the use $-1$ to single digits very uncomfortable, it usually takes a special notation. Conditions are denoted by minus one letter $z$.
+
+For example, the number of $5$ balanced in the ternary system can be written as $1zz$ And the number of $-5$ - As $z11$. Balanced ternary number system allows you to record a negative number without writing a single sign "minus". Ternary balanced system allows fractional numbers (eg $Third$ written as $0.1$ ).
+
+\subsection{ Translation algorithm }
+
+Learn how to translate the numbers in the ternary balanced system.
+
+To do this, we must first put the number in the ternary system.
+
+It is clear that we now have to get rid of the numbers $2$ For which we note that $2 = 3 - 1$ i.e. we can replace the two in the current discharge on $-1$, While increasing the next (i.e. the left of it in the natural record) discharge to $1$. If we move from right to left on the record and perform the above operation (in this case in some discharges may overflow more $3$ In that case, of course, to "dump" the extra three to senior level), we arrive at the ternary balanced record. Is easily seen that the same rule is true for fractional numbers.
+
+Gracefully above procedure can be described as follows. We take the number in the ternary number system, adds to it an infinite number of $\ldots 11111.11111 \ldots$ And then each bit of the result subtract one (already without any hyphens).
+
+Knowing now the translation algorithm from the usual ternary system in a balanced, easy to implement the operations of addition, subtraction, and division - just reducing them to the corresponding operations on ternary unbalanced numbers.
+
+\section{ Factorial modulo }
+In some cases it is necessary to consider some simple module $p$ complex formulas, which in particular may contain factorials. Here we consider the case when the module $p$ relatively small. It is clear that this problem is only useful if the factorials included in the numerator and the denominator of the fraction. Indeed, the factorial $p!$ and all subsequent vanish modulo $p$, But all the factors in fractions containing $p$ May be reduced, and the resulting expression will be a non-zero modulo $p$.
+
+Thus, the formal \textbf{task} was. To be calculated $n!$ modulo $p$, Without taking into account all the multiple $p$ factors included in the factorial. By learning to effectively compute a factorial, we can quickly calculate the value of various combinatorial formulas (eg, binomial coefficients ).
+
+\subsection{ Algorithm }
+
+We write down this "modified" factorial explicitly:
+
+$n! _ {\% p} =$
+
+$=1\cdot2\cdot3\cdot\ldots\cdot(p-2)\cdot(p-1)\cdot\underbrace{1}_{p}\cdot(p+1)\cdot(p+2)\cdot\ldots\cdot(2p-1)\cdot$
+
+$\cdot\underbrace{2}_{2p}\cdot(2p+1)\cdot\ldots\cdot(p^{2}-1)\cdot\underbrace{1}_{p^{2}}\cdot(p^{2}+1)\cdot\ldots\cdot n=$
+
+$=1\cdot2\cdot3\cdot\ldots\cdot(p-2)\cdot(p-1)\cdot\underbrace{1}_{p}\cdot1\cdot2\cdot\ldots\cdot(p-1)\cdot\underbrace{2}_{2p}\cdot1\cdot2\cdot$
+
+$\cdot\ldots\cdot(p-1)\cdot\underbrace{1}_{p^{2}}\cdot1\cdot2\cdot\ldots\cdot(n\%p)\quad({\rm mod\,}p)$
+
+With such a record is clear that the "modified" factorial divided into several blocks of length $p$ (The last block may be shorter), which are identical except for the last item:
+
+$n!_{\%p}=\underbrace{1\cdot2\cdot3\cdot\ldots\cdot(p-2)\cdot(p-1)\cdot1}_{1st}\cdot\underbrace{1\cdot2\cdot\ldots\cdot(p-1)\cdot2}_{2nd}\cdot\ldots\cdot$
+
+$\cdot\underbrace{1\cdot2\cdot\cdot(p-1)\cdot1}_{p-th}\cdot\ldots\cdot\underbrace{1\cdot2\cdot\dots\cdot(n\%p)}_{tail}\quad({\rm mod\,}p)$
+
+The total count of the blocks is easy - it's just $(P-1)! \rm {mod} p$ Which can be calculated by software or by a theorem of Wilson (Wilson) to immediately find $(P-1)! {\rm mod} p = p-1$. To multiply the total of all the blocks have obtained value to the power mod $p$ What can be done for $O (\log n)$ operations (see the binary exponentiation, however, you can see that we actually are building negative one in some degree, and therefore the result will always be either $1$ Or $p-1$, Depending on the parity rate. The value in the last, incomplete block also can be calculated separately for $O (p)$. Only the last elements of the blocks, we consider them carefully:
+
+$n!_{\%p}=\underbrace{\ldots\cdot1}\cdot\underbrace{\ldots\cdot2}\cdot\underbrace{\ldots\cdot3}\cdot\ldots\cdot\underbrace{\ldots\cdot(p-1)}\cdot\underbrace{\ldots\cdot1}\cdot\underbrace{\ldots\cdot1}\cdot\underbrace{\ldots\cdot2}\cdot\ldots$
+
+Again we come to the "modified" factorial, but smaller dimension (as much as it was full of blocks, and there were $\left \lfloor n / p \right \rfloor$ ). Thus the calculation of the "modified" factorial $n! _ {\% p}$ we have reduced over $O (p)$ operations to the calculation already $(N / p)! _ {\% P}$. Revealing this recurrence relation, we find that the depth of recursion is $O (\log_p n)$, Total \textbf{asymptotic} algorithm turns $O (p \log_p n)$.
+
+\subsection{ Implementation }
+
+It is clear that the implementation is not necessary to use recursion in the explicit form as tail recursion, it is easy to deploy in the cycle.
+
+\begin{verbatim}
+int factmod(int n, int p){
+    int res = 1 ;
+    while(n > 1){
+        res =(res *(( n / p)% 2 ? p - 1 : 1)) % p ;
+        for(int i = 2 ; i <= n % p ; ++ i )
+            res =(res * i)% p ;
+        n / = p ;
+    }
+    return res % p ;
+} 
+\end{verbatim}
+This implementation works for $O (p \log_p n)$.
+
+\section{ All subpatterns of a bitmask }
+\subsection{ Bust subpatterns fixed mask }
+
+Dana bitmask $m$. Required to effectively sort out all its subpatterns, i.e. such masks $s$, Which can be included only those bits that were included in the mask $m$.
+
+Immediately look at the implementation of this algorithm, based on tricks with Boolean operations:
+
+\begin{verbatim}
+int s = m ;
+while(s > 0){
+    ... can be used with...
+    s =(s - 1)& m ;
+} 
+\end{verbatim}
+or, using a compact operator $for$ :
+
+\begin{verbatim}
+for(int s = m ; s ; s =(s - 1)& m )
+    ... can be used with...
+\end{verbatim}
+The only exception for the two versions of the code - subpattern, zero will not be processed. Processing it will take out of the loop, or use a less elegant design, for example:
+
+\begin{verbatim}
+for(int s = m ; ; s =(s - 1)& m){
+    ... can be used with...
+    if(s == 0) break ;
+} 
+\end{verbatim}
+Let us examine why the above code does find all this mask subpattern, without repetitions in O (number), and in descending order.
+
+Suppose we have a current subpattern $s$ And we want to move to the next subpattern. Subtract from the mask $s$ unit, thus we remove the rightmost single bit, and all the bits to the right of it to put in $1$. Then remove all the "extra" one bits that are not included in the mask $m$ and therefore can not be included in the substring. Removal by bit operation $\& M$. The result is "cut off the" mask $s-1$ before the largest value that it can take, i.e. until after the next subpattern $s$ in descending order.
+
+Thus, the algorithm generates all the mask subpattern in order strictly decreasing, spending every transfer two elementary operations.
+
+Especially consider when $s = 0$. After performing $s-1$ we get a pattern, in which all the bits are on (the bit representation of $-1$ ), And then remove extra bit operations $(S-1) \& m$ get nothing but the mask $m$. Therefore, the mask $s = 0$ be careful - if time does not stop at zero mask, the algorithm may enter an infinite loop.
+
+\subsection{ Iterating all $3 ^ n$}
+
+In many problems, especially in the dynamic programming by masks is required to sort out all the masks, and each mask - all subpatterns:
+
+\begin{verbatim}
+for(int m = 0 ; m <(1 << n); ++ m )
+    for(int s = m ; s ; s =(s - 1)& m )
+        ... Use s and m...
+\end{verbatim}
+We prove that the inner loop will execute total $O (3 ^ n)$ iterations.
+
+\textbf{Proof: 1 way.} Consider $i$ First bit. For him, in general, there are exactly three ways: it is not included in the mask $m$ (And therefore in the subpattern $s$)And is included in $m$ But not in $s$ And he is a $m$ and $s$. Just bits $n$, So all the different combinations would $3 ^ n$, As required.
+
+\textbf{Proof: 2 way.} Note that if the mask $m$ has $k$ included bits, then it will have $2 ^ k$ subpatterns. Since the mask length $n$ with $k$ enabled bits is $C_n ^ k$ (See "binomial coefficients" ), then all combinations will be:
+
+$\sum_ {k = 0} ^ n C_n ^ k 2 ^ k.$
+
+Calculate this amount. For this, note that it is nothing else than the expansion in the binomial expression $(1 +2) ^ n$ i.e. $3 ^ n$, As required.
+
+\section{ Primitive roots }
+\subsection{ Definition }
+
+Primitive root modulo $n$ (Primitive root modulo $n$)Is a number $g$ That all its powers modulo $n$ run through all the numbers relatively prime to $n$. Mathematically, it is formulated as follows: if $g$ is a primitive root modulo $n$, Then for any integer $a$ such that ${\rm gcd} (a, n) = 1$, There is an integer $k$ That $g ^ k \equiv a \pmod {n}$.
+
+In particular, for a simple $n$ degree primitive roots run through all the numbers from $1$ to $n-1$.
+
+\subsection{ Existence }
+
+Primitive root modulo $n$ if and only if $n$ degree is either an odd prime or twice a prime power, and also in cases $n = 1$, $n = 2$, $n = 4$.
+
+This theorem (which has been fully proved by Gauss in 1801) is given here without proof.
+
+\subsection{ Connection to the Euler function }
+
+Let $g$ - A primitive root modulo $n$. Then we can show that the minimum number $k$ For which $g ^ k \equiv 1 \pmod {n}$ (i.e. $k$ - Index $g$ (Multiplicative order)), as well $\phi (n)$. Moreover, the opposite is true, and this fact will be used later in our algorithm for finding a primitive root.
+
+Also, if the modulo $n$ there is at least one primitive root, then all their $\phi (\phi (n))$ (As the cyclic group with $k$ The element has $\phi (k)$ generators).
+
+\subsection{ Algorithm for finding a primitive root }
+
+Naive algorithm requires the values ​​for each test $g$$O (n)$ time to calculate all its powers to check that they are all different. It's too slow algorithm, below we are using several well-known theorems of number theory a faster algorithm.
+
+Above we present a theorem that if the smallest number $k$ For which $g ^ k \equiv 1 \pmod {n}$ (i.e. $k$ - Index $g$ ), Is $\phi (n)$, Then $g$ - Primitive root. Since for any number $a$ Prime to $n$ Is performed Euler's theorem($a ^ {\phi (n)} \equiv 1 \pmod {n}$ ), Then to check that $g$ primitive root, it is enough to show that for all numbers $d$ Less $\phi (n)$, Was carried out $g ^ d \not \equiv 1 \pmod {n}$. However, while it is too slow algorithm.
+
+From Lagrange's theorem that the index of any number modulo $n$ divides $\phi (n)$. Thus, it suffices to show that for all proper divisors $d \| \\phi (n)$ performed $g ^ d \not \equiv 1 \pmod {n}$. This is a much faster algorithm, but we can go even further.
+
+Factorize number $\phi (n) = p_1 ^ {a_1} \ldots p_s ^ {a_s}$. We prove that in the previous algorithms can be seen as $d$ a number of the form $\frac {\phi (n)} {p_i}$. In fact, let $d$ - Any proper divisor $\phi (n)$. Then, obviously, there is a $j$ That $d \| \\frac {\phi (n)} {p_j}$ i.e. $d \cdot k = \frac {\phi (n)} {p_j}$. However, if the $g ^ d \equiv 1 \pmod {n}$, We would have:
+
+$g^{\frac{\phi(n)}{p_{j}}}\equiv g^{d\cdot k}\equiv\left(g^{d}\right)^{k}\equiv1^{k}\equiv1\quad({\rm mod\,}n)$
+
+i.e. still among the numbers of the form $\frac {\phi (n)} {p_i}$ there would be one for which the condition is not satisfied, as required.
+Thus, an algorithm for finding a primitive root. Find $\phi (n)$ By factoring it. Now loop through all the numbers $g = 1 \ldots n$ And for each count all values $g ^ {\frac {\phi (n)} {p_i}} \pmod {n}$. If the current $g$ All these numbers were different from $1$, It $g$ is the desired primitive root.
+
+Running time (assuming that the number of $\phi (n)$ there is $O \left (\log \phi (n) \right)$ dividers, and exponentiation algorithm runs Binary exponentiation, i.e. for $O (\log n)$)Is $O \left ({\rm Ans} \cdot \log \phi (n) \cdot \log n \right)$ plus the number of factorization $\phi (n)$ Where $\rm Ans$ - A result that is value of the unknown primitive root.
+
+About the growth rate of the growth of primitive roots $n$ known only estimates. It is known that primitive roots - a relatively small amount. One of the known estimates - evaluation Shupa (Shoup), which, assuming the truth of the Riemann hypothesis, there is a primitive root $O (\log ^ 6 n)$.
+
+\subsection{ Implementation }
+
+Function powmod() performs a binary power by module and function generator (int p) - finds a primitive root modulo $p$ (Factorization of $\phi (n)$ the simplest algorithm is implemented for $O (\sqrt {\phi (n)})$ ).
+
+To adapt this to arbitrary $p$, Just add the calculation of the Euler function in variable $phi$ And eliminate $res$ Non-prime to $n$.
+
+\begin{verbatim}
+int powmod(int a, int b, int p){
+    int res = 1 ;
+    while(b )
+        if(b & 1 )
+            res = int(res * 1ll * a % p ),  -- b ;
+        else
+            a = int(a * 1ll * a % p ),  b >>= 1 ;
+    return res ;
+}
+ 
+int generator(int p){
+    vector < int > fact ;
+    int phi = p - 1,  n = phi ;
+    for(int i = 2 ; i * i <= n ; ++ i )
+        if(n % i == 0){
+            fact. push_back(i);
+            while(n % i == 0 )
+                n / = i ;
+        }
+    if(n > 1 )
+        fact. push_back(n);
+ 
+    for(int res = 2 ; res <= p ; ++ res){
+        bool ok = true ;
+        for(size_t i = 0 ; i < fact. size() && ok ; ++ i )
+            ok & = powmod(res, phi / fact[i], p)! = 1 ;
+        if(ok) return res ;
+    }
+    return - 1 ;
+} 
+\end{verbatim}
+\section{ Discrete root extraction }
+Problem of discrete root extraction (similar to the discrete logarithm problem)is as follows. According to $n$($n$ - Simple) $a$, $k$ want to find all $x$ Satisfying the condition:
+
+$x ^ k \equiv a \pmod {n}$
+
+\subsection{ Algorithm solutions }
+
+We will solve the problem by reducing it to the problem of discrete logarithm.
+
+We apply the concept of a primitive root modulo $n$. Let $g$ - A primitive root modulo $n$ (As $n$ - Simple, it exists). We can find it, as described in the related article, for $O ({\rm Ans} \cdot \log \phi (n) \cdot \log n) = O ({\rm Ans} \cdot \log ^ 2 n)$ plus the number of factorization $\phi (n)$.
+
+Immediately discard the case when $a = 0$ - In this case, you find the answer $x = 0$.
+
+Since in this case($n$ - Simple) any number of $1$ to $n-1$ represented as a power of a primitive root, the root of the discrete, we can be represented as:
+
+${\left (g ^ y \right)} ^ k \equiv a \pmod {n}$
+
+where
+$x \equiv g ^ y \pmod {n}$
+
+Trivial transformations we obtain
+${\left (g ^ k \right)} ^ y \equiv a \pmod {n}$
+
+Here is an unknown quantity $y$ Thus, we came to the discrete logarithm problem in a pure form. This can be achieved by the algorithm baby-step-giant-step Shanks for $O (\sqrt {n} \log n)$ i.e. find one of the solutions $y_0$ this equation (or find that this equation has no solutions).
+Suppose we have found a solution $y_0$ this equation, then one of the solutions of the discrete root will $x_0 = g ^ {y_0} \pmod {n}$.
+
+\subsection{ Finding all solutions knowing one of them }
+
+To completely solve the problem, we must learn to one found $x_0 = g ^ {y_0} \pmod {n}$ find all other solutions.
+
+For this we recall the following fact, which is always a primitive root of the order $\phi (n)$ (See article on the primitive root ), i.e. the least degree of $g$ Giving the unit is $\phi (n)$. So adding to the exponent of the term with $\phi (n)$ does not change anything:
+
+$$x^{k}\equiv g^{y_{0}\cdot k+l\cdot\phi(n)}\equiv a\quad({\rm mod\,}n)\quad\forall l\in\mathbb{Z}$$
+
+Hence, all the solutions have the form
+$$x\equiv g^{y_{0}+\frac{l\cdot\phi(n)}{k}}\quad({\rm mod\,}n)\quad\forall l\in\mathbb{Z}$$
+
+where $l$ is chosen so that the fraction $\frac {l \cdot \phi (n)} {k}$ was intact. To this fraction was intact, the numerator must be a multiple of the least common multiple $\phi (n)$ and $k$ Where (remembering that the least common multiple of two numbers ${\rm lcm} (a, b) = \frac {a \cdot b} {{\rm gcd} (a, b)}$ ), We obtain
+$$x\equiv g^{y_{0}+i\frac{\phi(n)}{\gcd(k,\phi(n))}}\quad({\rm mod\,}n)\quad\forall i\in\mathbb{Z}$$
+
+This is the final convenient formula, which gives a general view of all the solutions of the discrete root.
+\subsection{ Implementation }
+
+We present the full implementation, including finding a primitive root, the discrete logarithm problem and the finding and conclusion of all solutions.
+
+\begin{verbatim}
+int gcd(int a, int b){
+    return a ? gcd(b % a, a): b ;
+}
+ 
+int powmod(int a, int b, int p){
+    int res = 1 ;
+    while(b )
+        if(b & 1 )
+            res = int(res * 1ll * a % p ),  -- b ;
+        else
+            a = int(a * 1ll * a % p ),  b >>= 1 ;
+    return res ;
+}
+ 
+int generator(int p){
+    vector < int > fact ;
+    int phi = p - 1,  n = phi ;
+    for(int i = 2 ; i * i <= n ; ++ i )
+        if(n % i == 0){
+            fact. push_back(i);
+            while(n % i == 0 )
+                n / = i ;
+        }
+    if(n > 1 )
+        fact. push_back(n);
+ 
+    for(int res = 2 ; res <= p ; ++ res){
+        bool ok = true ;
+        for(size_t i = 0 ; i < fact. size() && ok ; ++ i )
+            ok & = powmod(res, phi / fact[i], p)! = 1 ;
+        if(ok) return res ;
+    }
+    return - 1 ;
+}
+ 
+int main() {
+ 
+    int n, k, a ;
+    cin >> n >> k >> a ;
+    if(a == 0){
+        puts("1 \n 0");
+        return 0 ;
+    }
+ 
+    int g = generator(n);
+ 
+    int sq =(int)sqrt(n +.0)+ 1 ;
+    vector < pair < int, int > > dec(sq);
+    for(int i = 1 ; i <= sq ; ++ i )
+        dec[i - 1]= make_pair(powmod(g, int(i * sq * 1ll * k %(n - 1)), n ), i);
+    sort(dec. begin(), dec. end());
+    int any_ans = - 1 ;
+    for(int i = 0 ; i < sq ; ++ i){
+        int my = int(powmod(g, int(i * 1ll * k %(n - 1)), n)* 1ll * a % n);
+        vector < pair < int, int > >::iterator it =
+            lower_bound(dec. begin(), dec. end(), make_pair(my, 0)) ;
+        if(it ! = dec. end() && it - > first == my){
+            any_ans = it - > second * sq - i ;
+            break ;
+        }
+    }
+    if(any_ans == - 1){
+        puts("0");
+        return 0 ;
+    }
+ 
+    int delta =(n - 1)/ gcd(k, n - 1);
+    vector < int > ans ;
+    for(int cur = any_ans % delta ; cur < n - 1 ; cur + = delta )
+        ans. push_back(powmod(g, cur, n)) ;
+    sort(ans. begin(), ans. end());
+    printf("%d \n ", ans. size());
+    for(size_t i = 0 ; i < ans. size() ; ++ i )
+        printf("%d ", ans[i ]);
+ 
+} 
+\end{verbatim}
+\section{ Sieve of Eratosthenes in linear time }
+Given the number $n$. You want to find \textbf{all the easy-to-segment} $[2; n]$.
+
+The classic way of doing this - \textbf{the sieve of Eratosthenes}. This algorithm is very simple, but it works for the time $O (n \log \log n)$.
+
+Although currently known for a lot of algorithms that work for sublinear time (i.e. $o (n)$)Algorithm described below is interesting for its \textbf{simplicity} - it is practically difficult to classical sieve of Eratosthenes.
+
+In addition, the algorithm is presented here as a "side effect" actually computes \textbf{the factorization of all numbers} in the interval $[2; n]$ That can be useful in many practical applications.
+
+The drawback of the algorithm is driven by the fact that it uses \textbf{more memory} than the classical sieve of Eratosthenes: requires an array of wind $n$ numbers, while the classical sieve of Eratosthenes need only $n$ bits of memory (which is obtained $32$ times less).
+
+Thus, it makes sense to describe an algorithm to apply only to order numbers $10 ^ 7$, No more.
+
+Blame the algorithm seems to belong Grice and Misra (Gries, Misra, 1978 - see references at the end). (And, in fact, call the algorithm "Sieve of Eratosthenes" incorrectly: two very different algorithm.)
+
+\subsection{ Description of the algorithm }
+
+Our goal - to count for each number $i$ in the interval from $[2; n]$ its \textbf{minimal prime divisor} $lp [i]$.
+
+In addition, we need to keep a list of all known prime numbers - call it an array $pr []$.
+
+Initially, all the values $lp [i]$ filled with zeros, which means that we are assuming all the numbers simple. In the course of the algorithm the array will be gradually filled.
+
+We will now look over the current number of $i$ from $2$ to $n$. We can have two cases:
+
+$lp [i] = 0$ - This means that the number of $i$ - Simple as for it was not discovered by other factors.
+Therefore, it is necessary to assign $lp [i] = i$ and add $i$ end of the list $pr []$.
+
+$lp [i] \ne 0$ - This means that the current number of $i$ - Composite, and its minimal prime divisor is $lp [i]$.
+In both cases, then begins the process of \textbf{alignment of values} ​​in an array $lp []$ : We will take \textbf{multiples} $i$ And update their value $lp []$. However, our goal - to learn how to do it in such a way that in the end, each of the value $lp []$ would be set only once.
+
+Argues that this can be done in so doing. Consider the number of the form:
+
+$x_j = i \cdot p_j,$
+
+where the sequence $p_j$ - It's simple, do not exceed $lp [i]$ (Just for this, we need to keep a list of all prime numbers.)
+
+All the numbers of this type to put a new value $lp [x_j]$ - Obviously, it will be equal $p_j$.
+
+Why such an algorithm is correct, and why it works in linear time - see below, but for now we present the implementation.
+
+\subsection{ Implementation }
+
+Sieve is executed before the specified number in the constant $N$.
+
+\begin{verbatim}
+const int N = 10000000 ;
+int lp[N + 1];
+vector < int > pr ;
+ 
+for(int i = 2 ; i <= N ; ++ i){
+    if(lp[i]== 0){
+        lp[i]= i ;
+        pr. push_back(i);
+    }
+    for(int j = 0 ; j <(int)pr. size() && pr[j]<= lp[i]&& i * pr[j]<= N ; ++ j )
+        lp[i * pr[j]] = pr[j];
+} 
+\end{verbatim}
+This implementation is a little speed, getting rid of the vector $pr$ (Replacing it with a regular array with counter), as well as getting rid of duplicate multiply nested loop $for$ (For which the result of the work you just have to remember in a variable).
+
+\subsection{ Proof of correctness }
+
+Let us prove the \textbf{correctness of the} algorithm, i.e., he correctly places all values $lp []$, Each of which will be set only once. This will imply that the algorithm runs in linear time - as the rest of the algorithm is obviously working for $O (n)$.
+
+For this, note that any number of $i$ \textbf{unique representation} of the form:
+
+$i = lp [i] \cdot x,$
+
+where $lp [i]$ - (As before) is a minimal prime divisor of $i$ And the number of $x$ no divisors less $lp [i]$, That is:
+
+$lp [i] \le lp [x].$
+
+Now compare this with what makes our algorithm - it is actually for everyone $x$ enumerates all simple, which can be multiplied, i.e. simple to $lp [x]$ inclusive, to get the numbers in the above presentation.
+
+Therefore, the algorithm will do for each composite number exactly once, putting him right value $lp []$.
+
+This means the correctness of the algorithm and the fact that it runs in linear time.
+
+\subsection{ Running time and the required memory }
+
+Although the asymptotic $O (n)$ better asymptotic $O (n \log \log n)$ classical sieve of Eratosthenes, the difference between them is small. In practice this means a twofold difference in speed, and optimized versions of the sieve of Eratosthenes and does not lose the algorithm given here.
+
+Given the cost of memory, which requires the algorithm - array $lp []$ length $n$ and an array of simple $pr []$ a length of about $n / \ln n$ - This seems to be inferior to the classical algorithm sieve on all counts.
+
+But saves him that the array $lp []$, Calculated by this algorithm, allows you to search the factorization of any number in the interval $[2; n]$ time of the order of the size of the factorization. Moreover, the cost of even one additional array can be done to this factorization not require any division.
+
+Knowing the factorization of all numbers - very useful information for some tasks, and this algorithm is one of the few that allow you to look for it in linear time.
+
+\subsection{ Literature }
+
+David Gries, Jayadev Misra. \textbf{A Linear Sieve Algorithm for Finding Prime Numbers} [1978]
+
+\section{ Efficient algorithms for factoring }
+Here are implementing several factorization algorithms, each of which individually can work as fast or very slow, but together they provide a very fast method.
+
+Descriptions of these methods are, the more that they are well described on the internet.
+
+\subsection{ Method Pollard p-1 }
+Probabilistic test quickly answers not for all numbers.
+
+Returns either found divider, or 1 if the divisor was not found.
+
+\begin{verbatim}  template <class T>
+ T pollard_p_1 (T n)
+ {
+     / / Parameters of the algorithm significantly affect the performance and the quality of search
+     const T b = 13;
+     const T q [] = {2, 3, 5, 7, 11, 13};
+
+     / / Some attempts algorithm
+     T a = 5% n;
+     for (int j = 0; j <10; j++)
+     {
+
+         / / Look for such a, which is prime to n
+         while (gcd (a, n)! = 1)
+         {
+             mulmod (a, a, n);
+             a + = 3;
+             a% = n;
+         }
+
+         / / Calculate a ^ M
+         for (size_t i = 0; i <sizeof q / sizeof q [0]; i++)
+         {
+             T qq = q [i];
+             T e = (T) floor (log ((double) b) / log ((double) qq));
+             T aa = powmod (a, powmod (qq, e, n), n);
+             if (aa == 0)
+                 continue;
+            
+             / / Check if the answer is not found
+             T g = gcd (aa-1, n);
+             if (1 <g && g <n)
+                 return g;
+         }
+
+     }
+
+     / / If nothing was found
+     return 1;
+
+ } 
+\end{verbatim}\subsection{ Pollard's method of "Ro" }
+Probabilistic test quickly answers not for all numbers.
+
+Returns either found divider, or 1 if the divisor was not found.
+
+\begin{verbatim}  template <class T>
+ T pollard_rho (T n, unsigned iterations_count = 100000)
+ {
+     T
+         b0 = rand()% n,
+         b1 = b0,
+         g;
+     mulmod (b1, b1, n);
+     if (+ + b1 == n)
+         b1 = 0;
+     g = gcd (abs (b1 - b0), n);
+     for (unsigned count = 0; count <iterations_count && (g == 1 | | g == n); count++)
+     {
+         mulmod (b0, b0, n);
+         if (+ + b0 == n)
+             b0 = 0;
+         mulmod (b1, b1, n);
+        ++ B1;
+         mulmod (b1, b1, n);
+         if (+ + b1 == n)
+             b1 = 0;
+         g = gcd (abs (b1 - b0), n);
+     }
+     return g;
+ } 
+\end{verbatim}\subsection{ Bent method (modification of Pollard "Ro") }
+Probabilistic test quickly answers not for all numbers.
+
+Returns either found divider, or 1 if the divisor was not found.
+
+\begin{verbatim}  template <class T>
+ T pollard_bent (T n, unsigned iterations_count = 19)
+ {
+     T
+         b0 = rand()% n,
+         b1 = (b0 * b0 + 2)% n,
+         a = b1;
+     for (unsigned iteration = 0, series_len = 1; iteration <iterations_count; iteration++, series_len * = 2)
+     {
+         T g = gcd (b1-b0, n);
+         for (unsigned len = 0; len <series_len && (g == 1 && g == n); len++)
+         {
+             b1 = (b1 * b1 + 2)% n;
+             g = gcd (abs (b1-b0), n);
+         }
+         b0 = a;
+         a = b1;
+         if (g! = 1 && g! = n)
+             return g;
+     }
+     return 1;
+ } 
+\end{verbatim}\subsection{ Pollard's method of Monte-Carlo }
+Probabilistic test quickly answers not for all numbers.
+
+Returns either found divider, or 1 if the divisor was not found.
+
+\begin{verbatim}  template <class T>
+ T pollard_monte_carlo (T n, unsigned m = 100)
+ {
+     T b = rand()% (m-2) + 2;
+
+     static vector <T> primes;
+     static T m_max;
+     if (primes.empty())
+         primes.push_back (3);
+     if (m_max <m)
+     {
+         m_max = m;
+         for (T prime = 5; prime <= m;++++ prime)
+         {
+             bool is_prime = true;
+             for (vector <T>::const_iterator iter=primes.begin(), end=primes.end();
+                 iter ! = end;++ iter)
+             {
+                 T div = * iter;
+                 if (div * div> prime)
+                     break;
+                 if (prime% div == 0)
+                 {
+                     is_prime = false;
+                     break;
+                 }
+             }
+             if (is_prime)
+                 primes.push_back (prime);
+         }
+     }
+
+     T g = 1;
+     for (size_t i = 0; i < primes.size() && g == 1; i++)
+     {
+         T cur = primes [i];
+         while (cur <= n)
+             cur * = primes [i];
+         cur / = primes [i];
+         b = powmod (b, cur, n);
+         g = gcd (abs (b-1), n);
+         if (g == n)
+             g = 1;
+     }
+
+     return g;
+ } 
+\end{verbatim}\subsection{ Fermat's method }
+This is one hundred percent method, but it can be very slow if there are small numbers of divisors.
+
+Therefore, it is run only after all other methods.
+
+\begin{verbatim}  template <class T, class T2>
+ T ferma (const T & n, T2 unused)
+ {
+     T2
+         x = sq_root (n),
+         y = 0,
+         r = x * x - y * y - n;
+     for (; ;)
+         if (r == 0)
+             return x! = y?  xy: x + y;
+         else
+             if (r> 0)
+             {
+                 r - = y + y +1;
+                ++ Y;
+             }
+             else
+             {
+                 r + = x + x +1;
+                ++ X;
+             }
+ } 
+\end{verbatim}\subsection{ Trivial division }
+This basic method is useful to immediately process all the very small divisors.
+
+\begin{verbatim}  template <class T, class T2>
+ T2 prime_div_trivial (const T & n, T2 m)
+ {
+    
+     / / First check the trivial cases
+     if (n == 2 | | n == 3)
+         return 1;
+     if (n <2)
+         return 0;
+     if (even (n))
+         return 2;
+
+     / / Generate a simple 3 to m
+     T2 pi;
+     const vector <T2> & primes = get_primes (m, pi);
+
+     / / Divide by all simple
+     for (std::vector <T2>::const_iterator iter = primes.begin(), end = primes.end();
+         iter! = end;++ iter)
+     {
+         const T2 & div = * iter;
+         if (div * div> n)
+             break;
+         else
+             if (n% div == 0)
+                 return div;
+     }
+    
+     if (n <m * m)
+         return 1;
+     return 0;
+
+ } 
+\end{verbatim}\subsection{ Putting it all together }
+Combine all the methods in one function.
+
+Also, the function uses the simplicity of the test, or factorization algorithms can run indefinitely. For example, you can select a test BPSW(read article BPSW ).
+
+\begin{verbatim}  template <class T, class T2>
+ void factorize (const T & n, std::map <T,unsigned> & result, T2 unused)
+ {
+     if (n == 1)
+         ;
+     else
+         / / Check if the number is not a simple
+         if (isprime (n))
+            ++ Result [n];
+         else
+             / / If the number is small enough, it expand the simple search
+             if (n <1000 * 1000)
+             {
+                 T div = prime_div_trivial (n, 1000);
+                ++ Result [div];
+                 factorize (n / div, result, unused);
+             }
+             else
+             {
+                 / / Number of large, run it factorization algorithms
+                 T div;
+                 / / First go fast algorithms Pollard
+                 div = pollard_monte_carlo (n);
+                 if (div == 1)
+                     div = pollard_rho (n);
+                 if (div == 1)
+                     div = pollard_p_1 (n);
+                 if (div == 1)
+                     div = pollard_bent (n);
+                 / / Need to run 100% algorithm Farm
+                 if (div == 1)
+                     div = ferma (n, unused);
+                 / / Recursively factors found
+                 factorize (div, result, unused);
+                 factorize (n / div, result, unused);
+             }
+ } 
+\end{verbatim}
+\subsection{ Application }
+Download [5k] source code of a program that uses all the methods of factorization and test BPSW on simplicity.
+
+\section{ Multiply two polynomials or long numbers (fast Fourier transform)  }
+Here we consider an algorithm which allows to multiply two polynomials of length $n$ during $O (n \log n)$, Which is much better time $O (n ^ 2)$, Reached a trivial multiplication algorithm. Obviously, the multiplication of two long numbers can be reduced to the multiplication of polynomials, so the two long numbers also can be multiplied in time $O (n \log n)$.
+
+The invention of Fast Fourier Transform attributed Cooley (Coolet) and Taki (Tukey) - 1965 actually FFT repeatedly invented before, but the importance of it to the full did not realize until today's computers. Some researchers attribute the discovery FFT Runge (Runge) and Koenig (Konig) in 1924 Finally, the discovery of this method is attributed to Gauss (Gauss) in 1805
+
+\subsection{ Discrete Fourier Transform (DFT) }
+
+Suppose there is a polynomial $n$ Second degree:
+
+$A(x)=a_{0}x^{0}+a_{1}x^{1}+\ldots+a_{n-1}x^{n-1}$
+
+Without loss of generality, we can assume that $n$ a power of 2. If in fact $n$ not a power of 2, then we just add the missing coefficients by setting them equal to zero.
+
+Of complex function theory it is known that the complex roots $n$ Th roots of unity there is exactly $n$. We denote these roots by $w_ {n, k}, k = 0 \ldots {n-1}$, Then it is known that $w_ {n, k} = e ^ {i \frac {2 \pi k} {n}}$. In addition, one of these roots $w_n = w_ {n, 1} = e ^ {i \frac {2 \pi} {n}}$ (Called the principal value of the root $n$ Th roots of unity) is that all the other roots are its powers: $w_ {n, k} = (w_n) ^ k$.
+
+Then \textbf{the discrete Fourier transform (DFT)} (discrete Fourier transform, \textbf{DFT)} of the polynomial $A (x)$ (Or, equivalently, the DFT vector of coefficients $(A_0, a_1, \ldots, a_ {n-1})$)Is the value of this polynomial at the points $x = w_ {n, k}$ i.e. a vector:
+
+${\rm DFT}(a_{0},\ldots,a_{n-1})=(y_{0},\ldots,y_{n-1})=(A(w_{n,0}),\ldots,A(w_{n,n-1}))=$
+
+$= (A (w_n ^ 0), A (w_n ^ 1), \ldots, A (w_n ^ {n-1})).$
+
+Similarly defined and \textbf{the inverse discrete Fourier transform} (InverseDFT). Inverse DFT of the vector of a polynomial $(Y_0, y_1, \ldots y_ {n-1})$ - Is the vector of the coefficients of $(A_0, a_1, \ldots, a_ {n-1})$ :
+
+${\rm InverseDFT}(y_{0},\ldots,y_{n-1})=(a_{0},\ldots,a_{n-1})$
+
+Thus, if the direct proceeds from DFT coefficients of its values ​​in the complex roots $n$ Th roots of unity, the inverse DFT - on the contrary, the values ​​of the polynomial coefficients of restores.
+
+\subsection{ Usage of DFT for fast multiplication of polynomials }
+
+Given two polynomials $A$ and $B$. Calculate the DFT for each of them: ${\rm DFT} (A)$ and ${\rm DFT} (B)$ - Two vector values ​​of polynomials.
+
+Now, what happens when multiplying polynomials? Obviously, at every point of their value, just multiply, i.e.
+
+$(A \times B) (x) = A (x) \times B (x).$
+
+But this means that if we multiply the vector ${\rm DFT} (A)$ and ${\rm DFT} (B)$ Simply by multiplying each element of a vector to the corresponding element of another vector, we get nothing but a DFT of a polynomial $A \times B$ :
+
+${\rm DFT(A\times B)={\rm DFT(A)\times DFT(B)}}$
+
+Finally, applying the inverse DFT, we get:
+
+$InverseDFT({\rm DFT}(A)\times DFT(B))$
+
+where, again, on the right under the product of two DFT mean pairwise products of elements of vectors. Such a work is obviously required to calculate only $O (n)$ operations. Thus, if we learn to calculate the DFT and inverse DFT for time $O (n \log n)$, Then the product of two polynomials (and, consequently, the two long numbers), we can find for the same asymptotic behavior.
+
+It should be noted, first, that two polynomials should lead to the same degree (just adding the coefficients of one of them with zeros). Second, the product of two polynomials of degree $n$ obtain a polynomial of degree $2n-1$, So that the result is correct, pre-need double the degree of each polynomial (again, adding the zero coefficients).
+
+\subsection{ Fast Fourier transform }
+
+\textbf{Fast Fourier Transform} (fast Fourier transform) - a method to calculate the DFT for time $O (n \log n)$. This method is based on the properties of the complex roots of unity (that is, on the fact that the degree of the same roots give other roots).
+
+The main idea is to divide the FFT coefficient vector into two vectors, the recursive computation of the DFT for them, and combine the results into a single FFT.
+
+Thus, suppose that there is a polynomial $A (x)$ degrees $n$ Where $n$ - A power of two, and $n> 1$ :
+
+$A(x)=a_{0}x^{0}+a_{1}x^{1}+\ldots+a_{n-1}x^{n-1}$
+
+Divide it into two polynomials, one - with even and the other - with the odd coefficients:
+
+$A_{0}(x)=a_{0}x^{0}+a_{2}x^{1}+\ldots+a_{n-2}x^{n/2-1}$
+
+$A_{1}(x)=a_{1}x^{0}+a_{3}x^{1}+\ldots+a_{n-1}x^{n/2-1}$
+
+It is easy to verify that:
+
+$A (x) = A_0 (x ^ 2) + x A_1 (x ^ 2). ~ ~ ~ ~ ~ ~ ~ (1)$
+
+Polynomials $A_0$ and $A_1$ are twice lower degree than the polynomial $A$. If we can in linear time by the computed ${\rm DFT} (A_0)$ and ${\rm DFT} (A_1)$ calculate ${\rm DFT} (A)$, Then we get the desired fast Fourier transform (since it is a standard chart of "divide and conquer", and it is known for the asymptotic estimate $O (n \log n)$ ).
+
+So, suppose we have calculated the vector $\{Y_k ^ 0 \} _ {k = 0} ^ {n/2-1} = {\rm DFT} (A_0)$ and $\{Y_k ^ 1 \} _ {k = 0} ^ {n/2-1} = {\rm DFT} (A_1)$. Find expressions for $\{Y_k \} _ {k = 0} ^ {n-1} = {\rm DFT} (A)$.
+
+First, recalling (1), we immediately obtain the values ​​for the first half of the coefficients:
+
+$y_{k}=y_{k}^{0}+w_{n}^{k}y_{k}^{1},\quad k=0\ldots n/2-1$
+
+For the second half of the coefficients after transformation also get a simple formula:
+
+$y_{k+n/2}=A(w_{n}^{k+n/2})=A_{0}(w_{n}^{2k+n})+w_{n}^{k+n/2}A_{1}(w_{n}^{2k+n})=A_{0}(w_{n}^{2k}w_{n}^{n})+w_{n}^{k}w_{n}^{n/2}A_{1}(w_{n}^{2k}w_{n}^{n})=$
+
+$=A_{0}(w_{n}^{2k})-w_{n}^{k}A_{1}(w_{n}^{2k})=y_{k}^{0}-w_{n}^{k}y_{k}^{1}$
+
+(Here we have used (1), as well as the identities $w_n ^ n = 1$, $w_n ^ {n / 2} = -1$.)
+
+So, the result was the formula for the calculation of the whole vector $\{Y_k \}$ :
+
+$y_{k}=y_{k}^{0}+w_{n}^{k}y_{k}^{1},\quad k=0\ldots n/2-1$
+
+$y_{k+n/2}=y_{k}^{0}-w_{n}^{k}y_{k}^{1}\quad k=0\ldots n/2-1$
+
+(These formulas, i.e., two formulas of the form $a + bc$ and $a-bc$, Sometimes known as "butterfly transformation" ("butterfly operation"))
+
+Thus, we have finally built the FFT algorithm.
+
+\subsection{ Inverse FFT }
+
+So, let a vector $(Y_0, y_1, \ldots, y_ {n-1})$ - The values ​​of a polynomial $A$ degrees $n$ at points $x = w_n ^ k$. Need to recover the coefficients $(A_0, a_1, \ldots, a_ {n-1})$ polynomial. This well-known problem is called \textbf{interpolation,} this problem is common and solution algorithms, but in this case it will be received very simple algorithm (a simple fact that it does not differ from the direct FFT).
+
+DFT, we can write, according to his definition, in matrix form:
+
+$\begin{pmatrix}w_{n}^{0} & w_{n}^{0} & \cdots & w_{n}^{0}\\
+w_{n}^{0} & w_{n}^{1} & \cdots & w_{n}^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+w_{n}^{0} & w_{n}^{n-1} & \cdots & w_{n}^{(n-1)(n-1)}
+\end{pmatrix}\begin{pmatrix}a_{0}\\
+a_{1}\\
+\vdots\\
+a_{n-1}
+\end{pmatrix}=\begin{pmatrix}y_{0}\\
+y_{1}\\
+\vdots\\
+y_{n-1}
+\end{pmatrix}$
+
+Then the vector $(A_0, a_1, \ldots, a_ {n-1})$ can be found by multiplying the vector $(Y_0, y_1, \ldots, y_ {n-1})$ on the inverse matrix to the matrix on the left (which, incidentally, is called Vandermonde matrix):
+
+$\begin{pmatrix}a_{0}\\
+a_{1}\\
+\vdots\\
+a_{n-1}
+\end{pmatrix}=\begin{pmatrix}w_{n}^{0} & w_{n}^{0} & \cdots & w_{n}^{0}\\
+w_{n}^{0} & w_{n}^{1} & \cdots & w_{n}^{n-1}\\
+\vdots & \vdots & \ddots & \vdots\\
+w_{n}^{0} & w_{n}^{n-1} & \cdots & w_{n}^{(n-1)(n-1)}
+\end{pmatrix}^{-1}\begin{pmatrix}y_{0}\\
+y_{1}\\
+\vdots\\
+y_{n-1}
+\end{pmatrix}$
+
+A direct check shows that this inverse matrix is:
+
+$\frac{1}{n}\begin{pmatrix}w_{n}^{0} & w_{n}^{0} & \cdots & w_{n}^{0}\\
+w_{n}^{0} & w_{n}^{-1} & \cdots & w_{n}^{-(n-1)}\\
+\vdots & \vdots & \ddots & \vdots\\
+w_{n}^{0} & w_{n}^{-(n-1)} & \cdots & w_{n}^{-(n-1)(n-1)}
+\end{pmatrix}$
+
+Thus, we get:
+
+$a_{k}=\frac{1}{n}\sum_{j=0}^{n-1}y_{j}w_{n}^{-kj}$
+
+Comparing it with the formula for $y_k$ :
+
+$y_k = \sum_ {j = 0} ^ {n-1} a_j w_n ^ {kj},$
+
+we notice that these two problems are not real, so the coefficients $a_k$ You can find the same algorithm "divide and rule" as a direct FFT, but instead $w_n ^ k$ everywhere need to use $w_n ^ {-k}$ And each element of the result must be divided by $n$.
+
+Thus the calculation of the inverse DFT is not very different from the direct DFT calculation, and it also can be performed in time $O (n \log n)$.
+
+\subsection{ Implementation }
+
+Consider a simple recursive \textbf{implementation of the FFT} and inverse FFT, implement them in a single function, as the differences between the direct and inverse FFT minimal. For storing complex numbers to use the standard C++ STL type complex (defined in the header file <complex>).
+
+\begin{verbatim}
+typedef complex < double > base ;
+ 
+void fft(vector < base > & a, bool invert){
+    int n =(int)a. size() ;
+    if(n == 1) return ;
+ 
+    vector < base > a0(n / 2 ),  a1(n / 2);
+    for(int i = 0, j = 0 ; i < n ; i + = 2, ++ j){
+        a0[j]= a[i];
+        a1[j]= a[i + 1];
+    }
+    fft(a0, invert);
+    fft(a1, invert);
+ 
+    double ang = 2 * PI / n *(invert ? - 1 : 1);
+    base w(1 ),  wn(cos(ang ), sin(ang)) ;
+    for(int i = 0 ; i < n / 2 ; ++ i){
+        a[i]= a0[i]+ w * a1[i];
+        a[i + n / 2]= a0[i]- w * a1[i];
+        if(invert )
+            a[i]/ = 2,  a[i + n / 2]/ = 2 ;
+        w * = wn ;
+    }
+} 
+\end{verbatim}
+In the argument $\rm a$ function takes an input vector of coefficients, it will contain the same result. Argument $\rm invert$ shows direct or inverse DFT should be calculated. Inside the function checks if the length of the vector $\rm a$ is unity, there is nothing else to do - he is the answer. Otherwise, the vector $\rm a$ divided into two vectors $\rm a0$ and $\rm a1$ For which recursively DFT. Then calculated the value $w_n$ And the plant variable $w$ Containing the current level of $w_n$. Then compute the elements of the resulting DFT on the above formulas.
+
+If the flag is specified $\rm invert = true$, Then $w_n$ is replaced by $w_n ^ {-1}$ And each element of the result is divided by 2 (given that these dividing by 2 will take place in each level of recursion, then eventually just turns out that all of the elements to share $n$ ).
+
+Then the function to \textbf{multiply two polynomials} will be as follows:
+
+\begin{verbatim}
+void multiply(const vector < int > & a, const vector < int > & b, vector < int > & res){
+    vector < base > fa(a. begin(), a. end() ),  fb(b. begin(), b. end());
+    size_t n = 1 ;
+    while(n < max(a. size(), b. size()))  n <<= 1 ;
+    n <<= 1 ;
+    fa. resize(n ),  fb. resize(n);
+ 
+    fft(fa, false ),  fft(fb, false);
+    for(size_t i = 0 ; i < n ; ++ i )
+        fa[i]* = fb[i];
+    fft(fa, true);
+ 
+    res. resize(n);
+    for(size_t i = 0 ; i < n ; ++ i )
+        res[i]= int(fa[i].real() + 0.5);
+} 
+\end{verbatim}
+This feature works with polynomials with integer coefficients (although, of course, in theory there is nothing stopping her work with fractional odds). But the problem here is shown a large error in the calculation of DFT: the error can be significant, so it is better to round the numbers the most reliable way - by adding 0.5 and then rounded down.
+
+Finally, the function to \textbf{multiply two long numbers} is virtually no different from the function to multiply polynomials. The only feature - that after the multiplication of numbers as polynomials should be normalized, i.e. perform all the carries bits:
+
+\begin{verbatim}
+   int carry = 0 ;
+    for(size_t i = 0 ; i < n ; ++ i){
+        res[i]+ = carry ;
+        carry = res[i]/ 10 ;
+        res[i]% = 10 ;
+    } 
+\end{verbatim}
+(Since the length of the product of two numbers will never exceed the total length of the numbers, the size of the vector $\rm res$ enough to perform all the carries.)
+
+\subsection{ Computation "in place" without the additional memory }
+
+To increase the efficiency abandon recursion explicitly. In the above recursive implementation, we explicitly separated vector $\rm a$ two vectors - elements in even positions attributed to the same time creates a vector, and the odd - to another. However, if we reorder elements in a certain way, the need for creating temporary vectors would then be eliminated (i.e., all of the calculations, we could produce the "in place", right in the vector $a$ ).
+
+Note that the first level of recursion elements, junior (first) bit positions are zero, are the vector $a_0$ And low-order bits of positions which are equal to one - to the vector $a_1$. At the second level of recursion does the same thing, but for the second bit, etc. So if we are in a position $i$ each element $a [i]$ invert the order of the bits, and reorder elements of the array $a$ according to the new index, we obtain the required procedure (called \textbf{bit-reverse permutation} (bit-reversal permutation)).
+
+For example, for $n = 8$ this order is:
+
+$a=\left\{ \left[(a_{0},a_{4}),(a_{2},a_{6})\right],\left[(a_{1},a_{5}),(a_{3},a_{7})\right]\right\} $
+
+Indeed, at the first level of recursion (surrounded by curly braces) conventional recursive algorithm is a division of the vector into two parts: $[A_0, a_2, a_4, a_6]$ and $[A_1, a_3, a_5, a_7]$. As we can see, in the bit-reverse permutation of this vector corresponds to a simple division into two halves: the first $n / 2$ elements, and the last $n / 2$ elements. Then there is a recursive call of each half, and let the resulting DFT of each of them was returned in place of the elements themselves (i.e., in the first and second halves of the vector $a$ respectively):
+
+$a=\left\{ \left[y_{0}^{0},\, y_{1}^{0},\, y_{2}^{0},\, y_{3}^{0}\right],\left[y_{0}^{1},\, y_{1}^{1},\, y_{2}^{1},\, y_{3}^{1}\right]\right\} $
+
+Now we need to merge the two into one DFT for the vector. But the elements have risen so well that the union can be performed directly in the array. Indeed, consider the elements $y_0 ^ 0$ and $y_0 ^ 1$ Is applicable to them transform butterflies, and the result put in their place - and this place will be the same that should have been received:
+
+$a=\left\{ \left[y_{0}^{0}+w_{n}^{0}y_{0}^{1},\, y_{1}^{0},\, y_{2}^{0},\, y_{3}^{0}\right],\left[y_{0}^{0}-w_{n}^{0}y_{0}^{1},\, y_{1}^{1},\, y_{2}^{1},\, y_{3}^{1}\right]\right\} $
+
+Similarly, the transformation is applied to the butterfly $y_1 ^ 0$ and $y_1 ^ 1$ and the result is put in their place, etc. Finally, we obtain:
+
+$a=\lbrace\left[y_{0}^{0}+w_{n}^{0}y_{0}^{1},\, y_{1}^{0}+w_{n}^{1}y_{1}^{1},\, y_{2}^{0}+w_{n}^{2}y_{2}^{1},\, y_{3}^{0}+w_{n}^{3}y_{3}^{1}\right],$
+
+$\left[y_{0}^{0}-w_{n}^{0}y_{0}^{1},\, y_{1}^{0}-w_{n}^{1}y_{1}^{1},\, y_{2}^{0}-w_{n}^{2}y_{2}^{1},\, y_{3}^{0}-w_{n}^{3}y_{3}^{1}\right]\rbrace$
+
+i.e. We got exactly the required DFT of the vector $a$.
+
+We have described the process of computing the DFT at the first level of recursion, but it is clear that the same arguments hold for all other levels of recursion. Thus, \textbf{after applying the bit-reverse permutation calculate the DFT can be in place} without additional arrays.
+
+But now you can \textbf{get rid of the recursion} explicitly. So, we used bit-reverse permutation of the elements. Now, do all the work done the lower level of recursion, i.e. vector $a$ divide into pairs of elements for each applicable conversion butterflies, resulting in a vector $a$ will be the results of the lower level of recursion. In the next step we divide the vector $a$ on four elements applicable to each butterfly transformation to yield the DFT for each foursome. And so on, finally, in the last step, we received the results of the DFT for the two halves of the vector $a$ Is applicable to them and get the butterflies transform DFT for the vector $a$.
+
+Thus, the implementation of:
+
+\begin{verbatim}
+typedef complex < double > base ;
+ 
+int rev(int num, int lg_n){
+    int res = 0 ;
+    for(int i = 0 ; i < lg_n ; ++ i )
+        if(num &(1 << i))
+            res | = 1 <<(lg_n - 1 - i);
+    return res ;
+}
+ 
+void fft(vector < base > & a, bool invert){
+    int n =(int)a. size() ;
+    int lg_n = 0 ;
+    while(( 1 << lg_n)< n) ++ lg_n ;
+ 
+    for(int i = 0 ; i < n ; ++ i )
+        if(i < rev(i,lg_n))
+            swap(a[i], a[rev(i,lg_n)]);
+ 
+    for(int len = 2 ; len <= n ; len <<= 1){
+        double ang = 2 * PI / len *(invert ? - 1 : 1);
+        base wlen(cos(ang ), sin(ang)) ;
+        for(int i = 0 ; i < n ; i + = len){
+            base w(1);
+            for(int j = 0 ; j < len / 2 ; ++ j){
+                base u = a[i + j],  v = a[i + j + len / 2]* w ;
+                a[i + j]= u + v ;
+                a[i + j + len / 2]= u - v ;
+                w * = wlen ;
+            }
+        }
+    }
+    if(invert )
+        for(int i = 0 ; i < n ; ++ i )
+            a[i]/ = n ;
+}
+ 
+\end{verbatim}
+Initially, the vector $a$ bit-reverse permutation is used, which evaluates the number of significant bits($\rm lg \_n$)Among $n$ And for each position $i$ is the corresponding position of the bit which is bit recording record numbers $i$ Written in reverse order. If, the resulting position was more $i$, The elements in these two positions should be exchanged (unless this condition, each couple will exchange twice, and in the end nothing will happen).
+
+It then $\lg n - 1$ stages of the algorithm, in $k$ The second of which (the $k = 2 \ldots \lg n$)Are calculated DFT blocks of length $2 ^ k$. For all of these units will be one and the same value of a primitive root $w_ {2 ^ k}$, Which also is stored in the variable $\rm wlen$. For Loop $i$ iterated by block, and attached to it by cycle $j$ applies the transformation to all elements of a butterfly unit.
+
+You can further \textbf{optimize the reverse bits.} In the previous implementation, we explicitly passed on all the bits of the number, at the same bit-inverted order number. However, you can reverse bits in a different way.
+
+For example, let $j$ - Already counted the number equal to the inverse of the permutation of bits $i$. Then, during the transition to the next number $i +1$ We must and among $j$ add one, but add it to an "inverted" notation. In the usual binary system add one - then remove all the units at each end of the number (i.e., a group of junior units) and put one in front of them. Accordingly, in the "inverted" the system we have to go the bit number, starting with the oldest, and while there are ones, delete them and move on to the next bit, and when to meet the first zero bit, put in a unit and stop.
+
+Thus, we have a realization:
+
+\begin{verbatim}
+typedef complex < double > base ;
+ 
+void fft(vector < base > & a, bool invert){
+    int n =(int)a. size() ;
+ 
+    for(int i = 1, j = 0 ; i < n ; ++ i){
+        int bit = n >> 1 ;
+        for(; j >= bit ; bit >>= 1 )
+            j - = bit ;
+        j + = bit ;
+        if(i < j )
+            swap(a[i], a[j ]);
+    }
+ 
+    for(int len = 2 ; len <= n ; len <<= 1){
+        double ang = 2 * PI / len *(invert ? - 1 : 1);
+        base wlen(cos(ang ), sin(ang)) ;
+        for(int i = 0 ; i < n ; i + = len){
+            base w(1);
+            for(int j = 0 ; j < len / 2 ; ++ j){
+                base u = a[i + j],  v = a[i + j + len / 2]* w ;
+                a[i + j]= u + v ;
+                a[i + j + len / 2]= u - v ;
+                w * = wlen ;
+            }
+        }
+    }
+    if(invert )
+        for(int i = 0 ; i < n ; ++ i )
+            a[i]/ = n ;
+} 
+\end{verbatim}
+\subsection{ Additional optimization }
+
+We also present a list of other optimizations that together allow us to accelerate significantly the above "improved" implementation:
+
+\textbf{Predposchitat reverse bits} for all the numbers in a global table. Particularly feel that when the size of $n$ for all calls the same.
+This optimization becomes important when there are many challenges $fft()$. However, its effect can be seen even in the three calls (three calls - the most common situation, that is when you need a time to multiply two polynomials).
+
+Eliminate the use of $\rm vector$ \textbf{(Go to normal arrays).}
+The effect of this depends on the compiler, but it is usually present and is about 10\% -20\%.
+
+Predposchitat \textbf{all degrees} of $wlen$. In fact, in this cycle of the algorithm over and over again is a passage in all degrees of $wlen$ from $0$ to $len/2-1$ :
+\begin{verbatim}
+       for(int i = 0 ; i < n ; i + = len){
+            base w(1);
+            for(int j = 0 ; j < len / 2 ; ++ j){
+                [... ]
+                w * = wlen ;
+            }
+        } 
+\end{verbatim}
+Accordingly, before this cycle, we can in some predposchitat array all the required extent, and thus get rid of unnecessary multiplications in a nested loop.
+
+Approximate acceleration - 5-10\%.
+
+Get rid of the \textbf{calls to the array by the index,} instead use the context on the array elements, advancing them to the right one at each iteration.
+At first glance, optimizing compilers should be able to cope with this, but in practice it turns out that the replacement of references to arrays $a [i + j]$ and $a [i + j + len / 2]$ pointers to accelerate the program in common compilers. Gain of 5-10\%.
+
+\textbf{Abandon the standard type of complex numbers} $\rm complex$, Put it into your own implementation.
+Again, this may seem surprising, but even in modern compilers benefit from such a rewriting can be up to several tens of percent! This indirectly confirms the conventional wisdom to say that compilers perform worse Templated data types, optimizing them is much worse than with a non-formulaic types.
+
+Another useful optimization is the \textbf{cut-off at length:} the length of the working unit is small (say, 4), calculate the DFT for it "by hand." If you paint these cases in the form of explicit formulas for a length equal to $4/2$, The values ​​of the sine-cosine take integer values, whereby you can get a speed boost for a few tens of percent.
+We present here the implementation of the described improvements (except for the last two points, which lead to excessive code bloat):
+
+\begin{verbatim}
+int rev[MAXN];
+base wlen_pw[MAXN];
+ 
+void fft(base a[], int n, bool invert){
+    for(int i = 0 ; i < n ; ++ i )
+        if(i < rev[i])
+            swap(a[i], a[rev[i]]);
+ 
+    for(int len = 2 ; len <= n ; len <<= 1){
+        double ang = 2 * PI / len *(invert ? - 1 : + 1);
+        int len2 = len >> 1 ;
+ 
+        base wlen(cos(ang ), sin(ang)) ;
+        wlen_pw[0]= base(1, 0);
+        for(int i = 1 ; i < len2 ; ++ i )
+            wlen_pw[i]= wlen_pw[i - 1]* wlen ;
+ 
+        for(int i = 0 ; i < n ; i + = len){
+            base t,
+                * pu = a + i,
+                * pv = a + i + len2, 
+                * pu_end = a + i + len2,
+                * pw = wlen_pw ;
+            for(; pu ! = pu_end ; ++ pu, ++ pv, ++ pw){
+                t = * pv * * pw ;
+                * pv = * pu - t ;
+                * pu + = t ;
+            }
+        }
+    }
+ 
+    if(invert )
+        for(int i = 0 ; i < n ; ++ i )
+            a[i]/ = n ;
+}
+ 
+void calc_rev(int n, int log_n){
+    for(int i = 0 ; i < n ; ++ i){
+        rev[i]= 0 ;
+        for(int j = 0 ; j < log_n ; ++ j )
+            if(i &(1 << j))
+                rev[i]| = 1 <<(log_n - 1 - j);
+    }
+} 
+\end{verbatim}
+On common compilers faster than the previous implementation of this "improved" version of 2-3.

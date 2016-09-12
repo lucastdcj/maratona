@@ -1,0 +1,45 @@
+- mfmc que permita arestas múltiplas (testar algoritmo do more_code.cpp)
+
+- Exemplo simples de uso do fluxo máximo SEM ser o edmonds karp
+
+- O resolvedor de sistemas lineares ta recebendo vector< vector <
+  double > >, mudar pra matriz simples, além disso quando existem
+  multiplas soluções ele não retorna nenhuma delas.
+
+- Verificar a necessidade de ter 2 algoritmos de intersecção
+  (booleanos) de reta. Verificar se o primeiro pode ser alterado pra
+  não permetir os extremos e a eficiencia dos 2.
+
+- Suporte a coisas básicas do R3 (se possivel mudanca de base)
+
+- Arvore de Steiner (Dreyfus-Wagner)
+
+- Testar os algoritmos em more_code.cpp e classificá-los adequadamente.
+
+- Algoritmo de Emparelhamento Máximo de Custo Mínimo (hungaro.cpp)
+  dando WRONG ANSWER em certas instâncias, ex:
+    1
+    2 2
+    2
+    0 1 40
+    1 1 14
+
+- Aho Corasick parece que não funciona corretamente. Exemplo de problema:
+  nuevo.4811
+
+[REJECTED] Colocar data e hora da geracao do notebook logo apos "Conteudo",
+       preferencialmente alinhado a direita.
+// Esqueceu de comitar?
+
+[DONE] Padronizar o nome da lista de adjacencia (graph, g e adj), pois
+       quando precisar usar 2 algoritmos não precisa perder tempo
+       alterando.
+
+[DONE] Emparelhamento Bipartido de Custo Maximo (Hungaro)
+
+[DONE] inpoly_big() tem menos dependencias e é mais rápido.
+
+[DONE] Classe com operações basicas de polinomio
+
+[DONE] Classe com operações basicas de matriz
+

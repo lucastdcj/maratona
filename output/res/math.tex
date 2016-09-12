@@ -1,0 +1,333 @@
+\normalsize
+\scalefont{.8}
+\section{Matemática}
+
+  \subsection{Geometria}
+  {\bf Matriz de rotação}
+
+  $$
+  \left[\begin{array}{c}
+      x_{\theta} \\
+      y_{\theta}
+    \end{array}\right] =
+  \left[\begin{array}{rr}
+      cos\ \theta  & -sen\ \theta \\
+      sen\ \theta  & cos\ \theta
+    \end{array}\right]
+  \left[\begin{array}{c}
+      x \\
+      y
+    \end{array}\right]
+  $$
+
+  {\bf Fórmula de Brahmagupta}
+  Sendo $a$, $b$, $c$, $d$ os lados do quadrilátero, $s=\frac{1}{2}(a+b+c+d)$:
+  $$
+  A = \sqrt{(s-a)(s-b)(s-c)(s-d)-k}
+  $$
+
+  E sendo $\theta$ a soma do ângulo de dois lados opostos, ou $p$ e $q$ os comprimentos das diagonais do quadrilátero, temos:
+  $$
+  \begin{array}{rcl}
+    k &=& abcd\cos^{2}\frac{\theta}{2} \\
+    &=& \frac{1}{4}(ac+bd+pq)(ac+bd-pq)
+  \end{array}
+  $$
+  {\bf Calota Esférica}
+  Sendo $R$ o raio da esfera, $r$ o raio da base, e $h$ a altura da calota:
+  $$
+  A_{calota} = 2\pi Rh
+  $$
+  $$
+  V_{calota} = \frac{\pi h}{6}\left( 3r^{2} + h^{2} \right) = \frac{\pi h^{2}}{3}\left( 3R - h \right)
+  $$
+  {\bf Área de Segmento Circular}
+  Sendo $\alpha$ o ângulo formado pelo segmento circular, temos:
+  $$
+  A_{segmento} = \frac{r^{2}}{2} \left( \alpha - sen\ \alpha \right)
+  $$
+
+  Se tivermos $h$, a altura do segmento circular, ao invés de $\alpha$:
+  $$
+  \alpha = 2 acos\left( \frac{h}{r} \right)
+  $$
+  {\bf Centróide de um Polígono}
+  $$
+  c_{x} = \frac{1}{6A}\sum_{i=0}^{n-1} (x_{i} + x_{i+1})(x_{i}y_{i+1} - x_{i+1}y_{i})
+  $$
+  $$
+  c_{y} = \frac{1}{6A}\sum_{i=0}^{n-1} (y_{i} + y_{i+1})(x_{i}y_{i+1} - x_{i+1}y_{i})
+  $$
+  {\bf Área de triângulo}
+  Sendo $R$ o raio da circunferência circunscrita, e $r$ da inscrita, temos:
+  $$
+  A_{\triangle} = \frac{abc}{4R} = \frac{(a+b+c)r}{2}
+  $$
+  {\bf Fórmula de Euler para Poliedros Convexos}
+  $V$ vértices, $A$ arestas, $F$ faces: $V - A + F = 2$
+  
+  {\bf Teorema de Pick}
+  Sendo $A$ a área de um polígono e $i$ e $b$ a quantidade de pontos de coordenadas inteiras
+  no interior e na borda no polígono,respectivamente, temos:
+  $$
+  A = i + b/2 - 1
+  $$
+ 
+  {\bf Quantidade de pontos de coordenas inteiras num segmento}
+  Sendo $(x_1,y_1)$ e $(x_2,y_2)$ pontos de coordenadas inteiras nos extremos de um segmento:  
+  $$
+  q = mdc(|x_1 - x_2|, |y_1 - y_2|) + 1
+  $$ 
+
+  \subsection{Relações Binomiais}
+  Relação de Stifel:
+  $$
+  {n \choose k} = {n-1 \choose k} + {n-1 \choose k-1}
+  $$
+
+  Absorções:
+  $$
+  {n \choose k} = \frac{n-k+1}{k} {n \choose k-1} = \frac{n}{k} {n-1 \choose k-1} = \frac{n}{n-k} {n-1 \choose k}
+  $$
+
+  Soma de quadrados de binomiais:
+  $$
+  \sum_{k = 0}^{n} {n \choose k}^{2} = {2n \choose n}
+  $$
+
+  \subsection{Equações Diofantinas}
+  Dados inteiros $a,b > 0$ e $c$, a equação $ax+by=c$ tem soluções sse $g=gcd(a,b)$ é divisor de $c$.
+  
+  Sejam $x_g$ e $y_g$ a solução de $a \cdot x_g+b \cdot y_g=g$ obtida por Euclides. Então:
+  $$
+  \left\{
+  \begin{array}{ll}
+    x=x_g(c/g)+k \cdot b/g \\
+    y=y_g(c/g)-k \cdot a/g
+  \end{array} \right. k \in Z
+  $$
+  \subsection{Fibonacci}
+  Fórmula em $lg(n)$:
+
+
+  $f(0) = 1$ e $f(1) = 1$
+  $$
+  \begin{array}{rl}
+    f(n)&= f(x)f(n-x) + f(x-1)f(n-x-1) \\
+    &\\
+    &= f(\lfloor \frac{n}{2} \rfloor)f(n - \lfloor \frac{n}{2} \rfloor) + f(\lfloor \frac{n}{2} \rfloor +1)f(n - \lfloor \frac{n}{2} \rfloor - 1) \\
+    &\\
+    &= f(\lfloor \frac{n}{2} \rfloor)f(\lceil \frac{n}{2} \rceil) + f(\lfloor \frac{n}{2} \rfloor +1)f(\lceil \frac{n}{2} \rceil - 1)
+  \end{array}
+  $$
+
+  Fórmula com potência de matrizes:
+
+
+  $$
+  \left[\begin{array}{c}
+      f(n+1) \\
+      f(n)
+    \end{array}\right] =
+  \left[\begin{array}{cc}
+      1 & 1 \\
+      1 & 0
+    \end{array}\right]^n
+  \left[\begin{array}{c}
+      f(1) \\
+      f(0)
+    \end{array}\right]
+  $$
+
+  Propriedades:
+  \begin{itemize}
+  \item $f(n+1)f(n-1)-f(n)^2=(-1)^n$
+  \item $f(m)$ múltiplo de $f(n)$ sse $m$ múltiplo de $n$
+  \item $mdc(f(m),f(n))=f(mdc(m,n))$
+  \end{itemize}
+
+  \subsection{Problemas clássicos}
+
+  {\bf Fila do cinema}:
+  Sendo $n$ pessoas com \$$5$ e $m$ com \$$10$, temos:
+
+  $K_{0,m} = 0$ e $K_{n,0} = 1$
+
+  $K_{n,m} = K_{n-1,m} + K_{n, m-1}$
+  $$
+  K_{n,m} = {n+m \choose n} - {n+m \choose n+1} = \frac{n - m + 1}{n + 1}{n+m \choose n} 
+  $$
+
+  {\bf Números de Catalan}:
+  É um caso do problema da \textit{Fila de cinema}, com $n = m$.
+  $$
+  C_{n} = {2n \choose n} - {2n \choose n+1} = \frac{1}{n + 1}{2n \choose n} 
+  $$
+
+  \emph{Aplicações}: 1) Número de expressões com $n$ pares de parênteses, todos abrindo e fechando corretamente. Exemplo: $(())$ $()()$; 2) Número de maneiras de parentizar completamente $n+1$ fatores. Exemplo: $(ab)c$ $a(bc)$; 3) Número de árvores binárias completas com $n+1$ folhas; 4) Número de maneiras de triangularizar um polígono convexo de $n+2$ lados;
+
+
+  {\bf Número de somas} {\boldmath $x_{1} + x_{2} + \cdots + x_{n} = p$}
+
+
+  - Soluções não negativas: $CR_{n}^{p} = {n+p-1 \choose p}$
+  
+  - Soluções positivas $CP_{n}^{p} = {p-1 \choose n-1}$
+
+  {\bf Variáveis com restrições}: Quando alguns $x_{i}$ têm restrições do tipo $x_{i} \geq 3$, adotamos um $y_{i}$ tal que $x_{i} = 3+y_{i}$.
+
+  Assim, seguindo a restrição de que $y_{i} \geq 0$, teremos $x_{i} \geq 3$. A soma fica, então:
+  $$
+  \begin{array}{rcl}
+    x_{1} + x_{2} + \cdots + x_{i} + \cdots + x_{n} &=& p \\
+    x_{1} + x_{2} + \cdots + y_{i} + \cdots + x_{n} &=& p-3
+  \end{array}
+  $$
+
+  De forma geral, teremos:
+  $$
+  CR_{n}^{p} = {n+p-(b_{1}+b_{2}+\cdots+b_{n})-1 \choose p}
+  $$
+
+  Sendo $b_{i}$ o decremento (pode ser negativo) na variável $x_{i}$.
+
+  {\boldmath $x_{1} + x_{2} + \cdots + x_{n} \leq p$}
+
+  Definimos uma variável de $folga$, $f = p - (x_{1} + x_{2} + \cdots + x_{n})$, e obtemos:
+  $$
+  \begin{array}{l}
+    f \geq 0 \\
+    x_{1} + x_{2} + \cdots + x_{n} + f = p
+  \end{array}
+  $$
+
+  {\bf Permutações Caóticas:}
+  O número de permutações caóticas para $n$ elementos é dado por:
+  $D_{0}=1; D_{n}=(-1)^{n} + nD_{n-1} = (n-1)\left( D_{n-1}+D_{n-2} \right)$
+
+  {\bf Triângulos de Lados em} {\boldmath $\{1, 2, \cdots, n\}$}
+  $$
+  f_{n+1} = f_{n} + \left\{
+  \begin{array}{ll}
+    \frac{(n-2)}{2}^{2}                  &\textrm{, n par} \\
+    \Big\lceil \frac{(n-2)(n-4)}{4} \Big\rceil &\textrm{, n ímpar}
+  \end{array} \right.
+  $$
+
+  {\bf Problema de Josephus:}
+  Sendo $n$ pessoas em circulo, eliminando-se de $k$ em $k$, temos a recorrência:
+  $$
+  \begin{array}{l}
+    f(1,k) = 0 \\
+    f(n,k) = ( f(n-1,k) + k ) (mod\ n)
+  \end{array}
+  $$
+
+  {\bf Formas de Conectar um Grafo:}
+  Seja um grafo com $k$ componentes com tamanhos $s_1,\cdots,s_k$. O número de
+  maneiras de adicionar $k-1$ arestas de modo a conectá-lo é:
+  $s_1 \cdots s_k n^{k-2}$
+
+  {\bf Código de Gray:} $gray(i) = i\ \texttt{xor}\ \frac{i}{2}$
+
+  {\bf Código de Gray Invertido (n-bits):}
+  $$
+  \overline{gray_n}(i) =
+  (\frac{i}{2} \texttt{ or } (i \texttt{ and } ((n\%2)2^{n-1})))
+   \texttt{ xor } \left\{
+  \begin{array}{ll}
+    i         &\textrm{, i par} \\
+    \overline{i}        &\textrm{, i ímpar} \\
+  \end{array} \right.
+  $$
+
+  \subsection{Séries Numéricas}
+  $$\sum_{i=1}^{n} i^{2} = \frac{n(n+1)(2n+1)}{6}$$
+  $$\sum_{i=1}^{n} i^{3} = \frac{n^{2}(n+1)^{2}}{4}$$
+  
+  {\bf PA de 2ª ordem:} 
+  $$a_{n} = a_{1} + b_{1}(n-1) + \frac{r}{2}(n-2)(n-1)$$
+  $$S_{n} = a_{1}n + \frac{b_{1}n(n-1)}{2} + \frac{r}{6}n(n-2)(n-1)$$
+
+  {\bf PA de nª ordem:}   
+  $$S_{k} = a_{1}{k \choose 1} + \sum_{i=1}^{n}\Delta_{i}{k \choose i + 1}$$
+  $\Delta_{i}$: Primeiro elemento considerando a i-ésima PA.
+  \\
+  Exemplo: n = 5 ; seq = (1,32,243,1024,3125,7776,...)
+  \\
+  $$\Delta_{1} = 32 - 1 = 31$$
+  $$\Delta_{2} = 211 - 31 = 180$$
+  $$\Delta_{3} = 570 - 180 = 390$$
+  $$\Delta_{4} = 750 - 390 = 360$$
+  $$\Delta_{5} = 480 - 360 = 120$$		
+  Para a PA de 2ª ordem ficaria:
+  $$\Delta_{1} = b_{1}$$
+  $$\Delta_{2} = b_{2} - b_{1} = r$$  
+
+  \subsection{Matrizes e Determinantes}
+  {\bf Determinante de Vandermonde:}
+  $$
+  V_{n} = \left|
+  \begin{array}{cccc}
+    1     & 1     & \cdots & 1 \\
+    a_{1} & a_{2} & \cdots & a_{n} \\
+    a_{1}^{2} & a_{2}^{2} & \cdots & a_{n}^{2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{1}^{n-1} & a_{2}^{n-1} & \cdots & a_{n}^{n-1}
+  \end{array} \right| = \prod_{i>j} (a_{i}-a_{j})
+  $$
+  \subsection{Probabilidades}
+  {\bf Probabilidade Condicional:}
+  $$
+  P(B|A) = \frac{ n(A \cap B) }{ n(A) } = \frac{ P(A \cap B) }{ P(A) }
+  $$
+
+  {\bf Experimentos Repetidos:} Seja um experimento que se repete $n$
+  vezes, e em qualquer um deles temos $P(A) = p$ e, portanto,
+  $P(\bar{A}) = 1-p$. A probabilidade do evento $A$ ocorrer $k$ das
+  $n$ vezes é:
+  $$
+  P_{k} = {n \choose k} p^{k}(1-p)^{n-k}
+  $$
+  \subsection{Teoria dos Números}
+  {\bf Teorema de Fermat-Euler:}
+  Se $p$ é primo, temos, para todo inteiro $a$: $a^{p-1} \equiv 1 (mod\ p)$.  
+  Se temos $a$ e $n$ coprimos: $a^{\phi(n)} \equiv 1 (mod\ n)$
+  onde $\phi(n) = n \prod_{p|n} \left( 1 - \frac{1}{p} \right)$, $p$ é fator
+  primo de $n$, é a quantidade de números entre 1 e $n$ que são coprimos com $n$.
+
+  {\bf Teorema de Wilson:}
+  $n$ é primo sse $(n-1)! \equiv -1 (mod\ n)$
+  
+  {\bf Soma dos Divisores:}
+  A soma dos divisores de $n$ elevados à x-ésima potência, sendo $p_i$ os fatores
+  primos e $a_i$ os expoentes correspondentes:
+  \[
+    \sigma_{x}(n)=\prod_{i=1}^{r}\frac{p_{i}^{(a_{i}+1)x}-1}{p_{i}^{x}-1}
+  \]
+
+  {\bf Divisibilidade}
+  \\
+  Considere o numéro como: $a_{n}a_{n-1}a_{n-2}...a_{2}a_{1}a_{0}$
+  \\
+  \\
+  Por 3: A soma dos dígitos deve ser divisível por 3
+  \\
+  Por 4: O número formado por $a_{1}a_{0}$ deve ser divisível por 4
+  \\
+  Por 7: A soma $a_{2}a_{1}a_{0}-a_{5}a_{4}a_{3} + a_{8}a_{7}a_{6}-...$ deve ser divisível por 7
+  \\
+  Por 8: O número formado por $a_{2}a_{1}a_{0}$ deve ser divisível por 8
+  \\
+  Por 9: A soma dos dígitos deve ser divisível por 9
+  \\
+  Por 11: A soma $a_{0}-a_{1}+a_{2}-a_{3}+a_{4}-$ deve ser divisível por 11
+  \\
+  Por 13: A soma $a_{2}a_{1}a_{0}-a_{5}a_{4}a_{3} + a_{8}a_{7}a_{6}-...$ deve ser divisível por 13
+
+  {\bf Equação Modular Linear:}
+  Dada equação $ax \equiv b (mod\ m)$, se $b \equiv 0 (mod\ g)$
+  onde $g=\gcd(a,m)$, então as soluções são:
+  $$
+  x = \frac{b}{g}*\textrm{invmod}(\frac{a}{g},\frac{m}{g}) + k\frac{m}{g}\quad, k \in Z
+  $$

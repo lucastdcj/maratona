@@ -1,0 +1,1 @@
+../../geometricos/basico_interseccao.cpp
