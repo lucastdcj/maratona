@@ -1,14 +1,6 @@
-/*%
-Floyd Warshall
-Autor: Douglas Oliveira Santos
-Complexidade: O(n^3)
-Testes: nuevo-5785
-Descricao: Encontra o caminho
-mínimo entre todos os pares de vértices
-%*/
-
 #include <cstdio>
 #include <cstring>
+
 using namespace std;
 
 typedef long long int64;
@@ -17,7 +9,7 @@ typedef long long int64;
 #define INF 0x3f3f3f3f
 
 /* FIILL ME */
-int adj[MAXN][MAXN]; // matriz de adj com os custos
+int custo[MAXN][MAXN]; // matriz de adj com os custos
 
 int d[MAXN][MAXN];
 int pai[MAXN][MAXN]; /* pai de j nos caminhos a partir de i */
@@ -26,8 +18,8 @@ void floyd(int n) {
   memset(d, 0x3f, sizeof(d));
   for (int i = 0; i < n; i++) 
     for (int j = 0; j < n; j++) 
-      if (adj[i][j] < INF) {
-        d[i][j] = adj[i][j];
+      if (custo[i][j] < INF) {
+        d[i][j] = custo[i][j];
         pai[i][j] = i;
       }
           
@@ -46,10 +38,10 @@ int main() {
   while (1) {
     scanf("%d", &n);
     if (n == 0) return 0;
-    memset(adj, 0, sizeof(adj));
+    memset(custo, 0, sizeof(custo));
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < n; j++) {
-        scanf("%d", &adj[i][j]);        
+        scanf("%d", &custo[i][j]);        
       }       
     }
     floyd(n);
