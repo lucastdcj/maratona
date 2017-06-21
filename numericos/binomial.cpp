@@ -10,26 +10,26 @@
 %*/
 
 #define MOD 1300031
-typedef long long int64;
+typedef long long ll;
 
-int64 fat(int64 n, int64 M = MOD) {
-  int64 i, fat = 1;
-  for(i=2 ; i<=n ; i++)
-    fat = (fat*i)%M;
+ll fat(ll n, ll M = MOD) {
+  ll i, fat = 1;
+  for(i = 2LL ; i <= n ; i++)
+    fat = (fat * i) % M;
   return fat;
 }
 
-int64 binomial(int64 n, int64 k, int64 M = MOD) {
-  int64 a = fat(n)*invmod(fat(k),M);
-  int64 b = invmod(fat(n-k),M);
-  return ( (a%M)*b )%M;
+ll binomial(ll n, ll k, ll M = MOD) {
+  ll a = fat(n) * invmod(fat(k), M);
+  ll b = invmod(fat(n - k), M);
+  return ((a % M) * b) % M;
 }
 
 
-int64 binomial_(int n, int k) {
-  if(n-k < k) k = n-k;
-  if(k == 0) return 1;
-  return (n-k+1)*binomial_(n,k-1)/k;
+ll binomial_(int n, int k) {
+  if (n - k < k) k = n - k;
+  if (k == 0) return 1LL;
+  return (n - k + 1LL) * binomial_(n, k - 1LL) / k;
 }
 
 /**** Exemplo simples de uso ****/
