@@ -13,7 +13,7 @@
 typedef long long ll;
 
 ll fat(ll n, ll M = MOD) {
-  ll i, fat = 1;
+  ll i, fat = 1LL;
   for(i = 2LL ; i <= n ; i++)
     fat = (fat * i) % M;
   return fat;
