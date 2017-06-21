@@ -11,20 +11,20 @@
 %*/
 #include <algorithm>
 using namespace std;
+typedef long long ll;
+typedef pair<ll,ll> pll;
 
-typedef pair<int,int> pii;
-
-pii mdc(int a, int b){
-  if (b == 0) return pii(1,0);
-  pii u = mdc (b,a%b);
-  return pii(u.second, u.first - (a/b)*u.second);
+pll mdc(int a, int b){
+  if (b == 0) return pll(1LL, 0LL);
+  pll u = mdc(b, a % b);
+  return pll(u.second, u.first - (a / b) * u.second);
 }
 
-int invmod(int a, int M) {
-  pii r=mdc(a,M);
+ll invmod(ll a, ll M) {
+  pll r = mdc(a,M);
   if (r.first * a + r.second * M == 1)
     return (r.first + M) % M;
-  return 0;
+  return 0LL;
 }
 
 #include <cstdio>
@@ -36,6 +36,6 @@ int main() {
    
   /*retorna 36/x (mod m), se x eh divisor de 36*/
   //printf("%d\n",36*invmod(x,m) % m);
-  printf("%d\n",invmod(x,m));
+  printf("%lld\n",invmod(x,m));
   return 0;
 }
