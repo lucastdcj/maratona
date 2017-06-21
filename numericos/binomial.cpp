@@ -1,6 +1,5 @@
 /*%
   Binomial Modular (e não modular)
-  Autor: Alexandre Kunieda
   Complexidade: binomial: O(n)*O(lg MOD);  binomial_: O(n)
   Testes: binomial: DIOFANTO;  binomial_: uva.530, uva.369
   Dependencias: binomial: inverso modular;  binomial_: nenhuma
@@ -14,7 +13,7 @@ typedef long long ll;
 
 ll fat(ll n, ll M = MOD) {
   ll i, fat = 1LL;
-  for(i = 2LL ; i <= n ; i++)
+  for (i = 2LL; i <= n; i++)
     fat = (fat * i) % M;
   return fat;
 }
@@ -37,16 +36,16 @@ ll binomial_(int n, int k) {
 #define MAX 10
 
 int main() {
-  for(int i=0 ; i<MAX ; ++i) {
-    for(int j=0 ; j<=i ; ++j)
+  for (int i = 0; i < MAX; i++) {
+    for(int j = 0; j <= i; j++)
       printf("%lld ", binomial(i,j));
-    putchar('\n');
+    printf("\n");
   }
 
-  for(int i=0 ; i<MAX ; ++i) {
-    for(int j=0 ; j<=i ; ++j)
+  for (int i = 0; i < MAX; i++) {
+    for(int j = 0; j <= i; j++)
       printf("%lld ", binomial_(i,j));
-    putchar('\n');
+    printf("\n");
   }
 
   return 0;
