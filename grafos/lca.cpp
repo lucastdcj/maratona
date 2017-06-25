@@ -15,17 +15,17 @@ Descricao: Dada uma arvore preprocessa de forma a
 
 using namespace std;
 
-#define N (2*1024) // usar o dobro do limite
+#define MAXNN (2*1024) // usar o dobro do limite
 
 /* FILL ME */
-int adj[N][N], nadj[N];
+vector<int> adj[MAXN];
 
 int nE, nL, E[N], L[N], R[N], vis[N];
 
 void euler(int u, int el) {
   E[nE++] = u; L[nL++] = el;
   vis[u] = 1;
-  for (int i = 0; i < nadj[u]; i++)
+  for (int i = 0; i < adj[u].size(); i++)
     if (!vis[adj[u][i]]) {
       euler(adj[u][i], el+1);
       E[nE++] = u; L[nL++] = el;
@@ -37,7 +37,7 @@ void preprocess(int root, int n) {
   nE = nL = 0;
   memset(vis, 0, sizeof(vis));
   euler(root, 0);
-  for (i = 2*n-2; i >= 0; i--) R[E[i]] = i;
+  for (i = 2 * n - 2; i >= 0; i--) R[E[i]] = i;
   init(L, nL);
 }
 
@@ -51,11 +51,10 @@ int lca(int u, int v) {
 int main(){
   int i, u, v, n;
   scanf("%d", &n);
-  memset(nadj, 0, sizeof(nadj));
   for (i = 0; i < n-1; i++) {
     scanf("%d%d", &u, &v);
-    adj[u][nadj[u]++] = v;
-    adj[v][nadj[v]++] = u;
+    adj[u].push_back(v);
+    adj[v].push_back(u);
   }
 
   preprocess(0, n);
