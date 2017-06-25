@@ -8,6 +8,7 @@ Descricao: Dada uma arvore preprocessa de forma a
            realizar querys da forma LCA(u,v) que retornam
            o menor ancestral (mais longe da raiz) comum
            de u e v na arvore.
+Tutorial: 
 %*/
 
 #include <cstring>
@@ -20,7 +21,7 @@ using namespace std;
 /* FILL ME */
 vector<int> adj[MAXN];
 
-int nE, nL, E[N], L[N], R[N], vis[N];
+int nE, nL, E[MAXN], L[MAXN], R[MAXN], vis[MAXN];
 
 void euler(int u, int el) {
   E[nE++] = u; L[nL++] = el;
