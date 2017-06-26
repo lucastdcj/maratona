@@ -11,15 +11,22 @@ int id[MAXN];
 
 void build_tree() {
   nb = 0;
-  for (int u = 0; u < n; u++) if (is_art[u]) id[u] = nb++;
+  for (int u = 0; u < n; u++) {
+    if (is_art[u]) id[u] = nb++;
+  }  
+
   for (int i = 0; i < ncomp; i++) {
     int c = nb++;
     for (int u : comps[i]) {
       if (!is_art[u]) id[u] = c;
-      else {
+      else {            
         adj_b[c].push_back(id[u]);
         adj_b[id[u]].push_back(c);
       }
     }
+  }  
+  for (int i = 0; i < nb; i++) {
+    sort(adj_b[i].begin(), adj_b[i].end());
+    adj_b[i].erase(unique(adj_b[i].begin(), adj_b[i].end()), adj_b[i].end());
   }
 }
