@@ -51,7 +51,7 @@ void dfs(int u, int p, int& t) {
 
 void bcc() {
   int t;
-  int ncomp = 0;
+  ncomp = 0;
   for (int i = 0; i < n; i++) vis[i] = false;
   for (int i = 0; i < n; i++) if (!vis[i]) dfs(i, -1, t = 0);
 }
