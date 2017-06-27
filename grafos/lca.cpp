@@ -1,22 +1,25 @@
-void init() {
+int depth[MAXN];
+int P[MAXLOG][MAXN];
+
+void init(int n) {
   for (int j = 1; (1 << j) < n; j++)
     for (int i = 0; i < n; i++)
-      if (p[j - 1][i] != -1) {
-        p[j][i] = p[j - 1][p[j - 1][i]]; 
+      if (P[j - 1][i] != -1) {
+        P[j][i] = P[j - 1][P[j - 1][i]]; 
       }
 }
 
 int lca(int u, int v) {
   if (depth[u] < depth[v]) swap(u, v);
-  for (int i = LOG; i >= 0; i--) {
-    if (p[i][u] != -1 && depth[p[i][u]] >= depth[v]) u = p[i][u];
+  for (int i = MAXLOG - 1; i >= 0; i--) {
+    if (P[i][u] != -1 && depth[P[i][u]] >= depth[v]) u = P[i][u];
   }
   if (u == v) return v;
-  for (int i = LOG; i >= 0; i--) {
-    if (p[i][v] != -1 && p[i][u] != p[i][v]) {
-      u = p[i][u];
-      v = p[i][v];
+  for (int i = MAXLOG - 1; i >= 0; i--) {
+    if (P[i][v] != -1 && P[i][u] != P[i][v]) {
+      u = P[i][u];
+      v = P[i][v];
     }
   }
-  return p[0][u];    
+  return P[0][u];    
 }
