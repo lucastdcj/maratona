@@ -20,17 +20,19 @@ int H, Bucket[N], nBucket[N], Rank[N], Height[N], c;
 
 struct Suffix {
   int idx; // Suffix starts at idx, i.e. it's str[ idx .. L-1 ]
-  bool operator<(const Suffix& sfx) const
+  
   // Compares two suffixes based on their first 2H symbols,
   // assuming we know the result for H symbols.
-  {
-    if(H == 0) return str[idx] < str[sfx.idx];
-    else if(Bucket[idx] == Bucket[sfx.idx])
-      return (Bucket[idx+H] < Bucket[sfx.idx+H]);
-    else
-      return (Bucket[idx] < Bucket[sfx.idx]);
+  bool operator < (const Suffix& sfx) const {
+    if (H == 0) {
+      return str[idx] < str[sfx.idx];
+    } else if (Bucket[idx] == Bucket[sfx.idx]) {
+      return Bucket[idx+H] < Bucket[sfx.idx+H];
+    } else {
+      return Bucket[idx] < Bucket[sfx.idx];
+    }
   }
-  bool operator==(const Suffix& sfx) const {
+  bool operator == (const Suffix& sfx) const {
     return !(*this < sfx) && !(sfx < *this);
   }
 } Pos[N];
@@ -38,12 +40,11 @@ struct Suffix {
 int UpdateBuckets(int L) {
   int start = 0, id = 0, c = 0;
   for(int i = 0; i < L; i++) {
-    if(i != 0 && !(Pos[i] == Pos[i-1])) {
+    if (i != 0 && !(Pos[i] == Pos[i-1])) {
       start = i;
       id++;
     }
-    if(i != start)
-      c = 1;
+    if(i != start) c = 1;
     nBucket[Pos[i].idx] = id;
   }
   memcpy(Bucket, nBucket, 4 * L);
@@ -55,7 +56,7 @@ void SuffixSort(int L) {
   for(int i = 0; i < L; i++) Pos[i].idx = i;
   sort(Pos, Pos + L);
   c = UpdateBuckets(L);
-  for(H=1;c;H *= 2) {
+  for(H = 1; c; H *= 2) {
     // Sort based on first 2*H symbols, assuming
     // that we have sorted based on first H character
     sort(Pos, Pos+L);
@@ -68,14 +69,14 @@ void SuffixSort(int L) {
 void ComputeLCP(int L) {
   for (int i = 0; i < L; i++) Rank[Pos[i].idx] = i;
   int h = 0;
-  for (int i = 0; i < L; i++)
-    if (Rank[i] > 0) {
-      int k = Pos[Rank[i] - 1].idx;
-      while (str[i+h] == str[k+h])
-        ++h;
-      Height[Rank[i]] = h;
-      if (h > 0) --h;
-    }
+  for (int i = 0; i < L; i++) {
+    if (Rank[i] <= 0) continue;
+    int k = Pos[Rank[i] - 1].idx;
+    while (str[i + h] == str[k + h]) h++;
+    Height[Rank[i]] = h;
+    if (h > 0) h--;
+    
+  }
 }
 
 int main() {
