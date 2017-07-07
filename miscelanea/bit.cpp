@@ -14,23 +14,18 @@
 
 #define MAXN 1000
 
-int tree[MAXN+1];
-
+int tree[MAXN + 1];
 int query(int x) {
-  int sum=0;
-   
-  for (x++; x>0; x-=x & (-x))
-    sum+=tree[x];
-
+  if (x < 0) return 0;
+  int sum = 0;
+  for (x++; x > 0; x -= x & (-x)) sum += tree[x];
   return sum;
 }
-
+ 
 /*by representa um inc/decremento em x*/
-void update(int x, int by) { 
-  if (x<0) return;
-   
-  for (x++; x<=MAXN; x+=x & (-x))
-    tree[x]+=by;
+void update(int x, int by) {
+  if (x < 0) return; 
+  for (x++; x <= MAXN; x += x & (-x)) tree[x] += by;
 }
 
 /**** Exemplo simples de uso ****/
