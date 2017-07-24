@@ -1,5 +1,17 @@
-int depth[MAXN];
+int depth[MAXN], vis[MAXN];
 int P[MAXLOG][MAXN];
+vector<int> adj[MAXN];
+
+void dfs(int u, int h) {
+  vis[u] = true;
+  depth[u] = h;  
+  for (int v : adj[u]) {
+    if (vis[v]) continue;
+    P[0][v] = u;
+    dfs(v, h + 1);
+  }
+  return;
+}
 
 void init(int n) {
   for (int j = 1; (1 << j) < n; j++)
@@ -23,3 +35,5 @@ int lca(int u, int v) {
   }
   return P[0][u];    
 }
+
+// REMEMBER TO CALL init()
