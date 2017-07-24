@@ -11,9 +11,9 @@ Caso queira o menor, descomente o = em pairmin()
 %*/
 using namespace std;
 #define MAXN 100100
-#define LOG 16     // piso de log2(N)
+#define MAXLOG 16     // piso de log2(N)
 
-int *va, Log2[MAXN], p[LOG+1][MAXN];
+int *va, Log2[MAXN], p[MAXLOG+1][MAXN];
 
 int pairmin(int i1, int i2) {
    return va[i1] </*=*/va[i2] ? i1 : i2;
