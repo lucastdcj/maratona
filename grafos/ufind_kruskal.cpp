@@ -26,7 +26,7 @@ int uffind(int i) {
 void ufunion(int v, int w) {
   v = uffind(v); w = uffind(w);
   if (v == w) return;
-  if (sz[v] > sz[w]) swap(v,w);
+  if (sz[v] > sz[w]) swap(v, w);
   id[v] = w;
   if (sz[v] == sz[w]) sz[w]++;
 }
@@ -35,21 +35,20 @@ void ufunion(int v, int w) {
 #define MAXM 10010
 
 /* FILL ME */
-struct edge {
+struct Edge {
   int u, v, w;
   int ind;
 } ed[MAXM];
 
-bool comp(edge a, edge b) {
+bool comp(const Edge& a, const Edge& b) {
   return a.w < b.w;
 }
 
 /* Para cada aresta i, 
 diz se está ou não na árvore */
 bool used[MAXM];
-
 int kruskal(int n, int m) {
-  sort(ed, ed+m, comp);
+  sort(ed, ed + m, comp);
   ufinit(n);
   int res = 0;
   for (int i = 0; i < m; i++) {
