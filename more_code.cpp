@@ -31,13 +31,25 @@ unique(v.begin(), v.end()); //eliminates duplicates
 struct species { 
         char s[81]; 
 };
-bool operator==(const species &a, const species &b){ 
+bool operator==(const species& a, const species& b){ 
         return !strcmp(a.s, b.s); 
 }
-bool operator<(const species &a, const species &b){
+bool operator<(const species& a, const species& b){
         return strcmp(a.s, b.s) < 0; 
 } 
-map<species,int> cnt; 
+map<species, int> cnt; 
+
+
+/********************************************************************
+* Split String                                                      *
+********************************************************************/
+vector<string> split(const string& s, char delim = ',') {
+  stringstream ss(s);
+  string item;  
+  vector<string> tokens;
+  while (std::getline(ss, item, delim)) tokens.push_back(item);
+  return tokens;
+}
 
 
 
