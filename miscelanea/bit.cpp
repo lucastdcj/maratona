@@ -8,7 +8,7 @@
   subvetor v[0..x] de forma eficiente. Para o calculo
   da soma de um subvetor qualquer usa-se a relacao
   sum(a..b) =  sum(1..b) - sum(1..a-1)
-                           
+
   Observacao: Zerar o vetor tree[] antes de utilizar
   %*/
 
@@ -21,10 +21,10 @@ int query(int x) {
   for (x++; x > 0; x -= x & (-x)) sum += tree[x];
   return sum;
 }
- 
+
 /*by representa um inc/decremento em x*/
 void update(int x, int by) {
-  if (x < 0) return; 
+  if (x < 0) return;
   for (x++; x <= MAXN; x += x & (-x)) tree[x] += by;
 }
 
@@ -32,12 +32,12 @@ void update(int x, int by) {
 #include <cstdio>
 #include <cstring>
 
-int main(){
-  memset(tree,0,sizeof(tree));
-   
-  update(3,2);
-  update(2,-1);
-   
-  printf("%d\n",query(10));
+int main() {
+  memset(tree, 0, sizeof(tree));
+
+  update(3, 2);
+  update(2, -1);
+
+  printf("%d\n", query(10));
   return 0;
 }
