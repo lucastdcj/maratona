@@ -11,11 +11,10 @@ using namespace std;
 
 #define MAXN 1010
 
-int id[MAXN], sz[MAXN]; //uf auxiliar
+int id[MAXN], sz[MAXN];  // uf auxiliar
 
 void ufinit(int n) {
-  for (int i = 0; i < n; i++)
-    id[i] = i, sz[i] = 1;
+  for (int i = 0; i < n; i++) id[i] = i, sz[i] = 1;
 }
 
 int uffind(int i) {
@@ -24,7 +23,8 @@ int uffind(int i) {
 }
 
 void ufunion(int v, int w) {
-  v = uffind(v); w = uffind(w);
+  v = uffind(v);
+  w = uffind(w);
   if (v == w) return;
   if (sz[v] > sz[w]) swap(v, w);
   id[v] = w;
@@ -40,11 +40,9 @@ struct Edge {
   int ind;
 } ed[MAXM];
 
-bool comp(const Edge& a, const Edge& b) {
-  return a.w < b.w;
-}
+bool comp(const Edge& a, const Edge& b) { return a.w < b.w; }
 
-/* Para cada aresta i, 
+/* Para cada aresta i,
 diz se está ou não na árvore */
 bool used[MAXM];
 int kruskal(int n, int m) {
