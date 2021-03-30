@@ -1,20 +1,16 @@
-/*%
-<Nome do algoritmo>
-Autor: <autor ou fonte da implementacao>
-Complexidade: <complexidade>
-Tempo de implementacao: <Tempo aprox de implementacao>
-Testes: <Campo de teste (em quais problemas passou)>
-Dependencias: <Dependencias de outras partes do notebook>
-Descricao: <Pra que serve o algoritmo>
-%*/
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <map>
+#include <set>
+#include <vector>
+#include <algorithm>
 
-int f() {
-  return 12345;
-}
+using namespace std;
 
+int main() {
+  std::ios::sync_with_stdio(false);
 
-/**** Exemplo simples de uso ****/
-int main(void){
-	printf("12345 = %d\n",f());
-	return 0;
+  return false;
+
 }
